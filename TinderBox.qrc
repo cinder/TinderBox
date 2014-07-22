@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/edit_add.png</file>
+        <file>icons/edit_remove.png</file>
+        <file>icons/folder.png</file>
+        <file>icons/xcode.png</file>
+        <file>icons/xcode_selected.png</file>
+        <file>resources/background.png</file>
+        <file>icons/xcode_ios_selected.png</file>
+        <file>icons/xcode_ios.png</file>
+        <file>resources/YanoneKaffeesatz-Regular.ttf</file>
+        <file>resources/YanoneKaffeesatz-Light.ttf</file>
+        <file>resources/warning.png</file>
+        <file>resources/error.png</file>
+        <file>resources/GenericCinderBlock.png</file>
+        <file>icons/tinderbox_app_icon.ico</file>
+        <file>icons/vc11.png</file>
+        <file>icons/vc11_selected.png</file>
+        <file>icons/vc2012_winrt_selected.png</file>
+        <file>icons/vc2012_winrt.png</file>
+    </qresource>
+</RCC>
