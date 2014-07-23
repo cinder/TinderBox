@@ -336,8 +336,8 @@ background-color: red;
              </property>
              <property name="icon">
               <iconset>
-               <normalon>:/icons/vc11.png</normalon>
-               <selectedon>:/icons/vc11_selected.png</selectedon>
+               <normalon>:/icons/vc2013.png</normalon>
+               <selectedon>:/icons/vc2013_selected.png</selectedon>
               </iconset>
              </property>
             </item>

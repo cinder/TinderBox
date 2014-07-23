@@ -18,5 +18,7 @@
         <file>icons/vc11_selected.png</file>
         <file>icons/vc2012_winrt_selected.png</file>
         <file>icons/vc2012_winrt.png</file>
-    </qresource>
+        <file>icons/vc2013.png</file>
+        <file>icons/vc2013_selected.png</file>
+	</qresource>
 </RCC>

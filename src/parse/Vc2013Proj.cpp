@@ -17,7 +17,7 @@ QString	Vc2013Proj::getSlnHeaderString() const
 
 	result += "\r\n";
 	result += "Microsoft Visual Studio Solution File, Format Version 12.00\r\n";
-	result += "# Visual Studio Express 2013 for Windows Desktop\r\n";
+    result += "# Visual Studio 2013\r\n";
 
 	return result;
 }
