@@ -35,6 +35,7 @@ public slots:
 	void		generateProject();
 
 private:
+    int             nextId() const override;
 	void			checkForFirstTime();
 	void			loadPreferences();
 	void			loadTemplates();
@@ -42,6 +43,7 @@ private:
 
 	class WizardPageMain			*mWizardPageMain;
 	class WizardPageCinderBlocks	*mWizardPageCinderBlocks;
+    class WizardPageEnvOptions      *mWizardPageEnvOptions;
 	Prefs					*mPrefs;
 	QString					mCinderLocation;
 	ErrorList				mTemplateErrors, mCinderBlockErrors;

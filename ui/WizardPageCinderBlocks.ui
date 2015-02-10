@@ -26,7 +26,16 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetMinimumSize</enum>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
     <number>2</number>
    </property>
    <item>
@@ -95,7 +104,7 @@
         <string>Warnings</string>
        </property>
        <property name="icon">
-        <iconset resource="TinderBox.qrc">
+        <iconset resource="../TinderBox.qrc">
          <normaloff>:/resources/warning.png</normaloff>:/resources/warning.png</iconset>
        </property>
        <property name="iconSize">
@@ -353,7 +362,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="TinderBox.qrc"/>
+  <include location="../TinderBox.qrc"/>
  </resources>
  <connections/>
 </ui>

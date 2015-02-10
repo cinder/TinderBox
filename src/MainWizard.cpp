@@ -1,6 +1,7 @@
 #include "MainWizard.h"
 #include "WizardPageMain.h"
 #include "WizardPageCinderBlocks.h"
+#include "WizardPageEnvOptions.h"
 #include "Preferences.h"
 #include "FirstTimeDlg.h"
 #include "Instancer.h"
@@ -42,10 +43,13 @@ MainWizard::MainWizard(QWidget *parent) :
 	setButtonLayout( buttonLayout );
 
 	mWizardPageMain = new WizardPageMain( this );
-	addPage( mWizardPageMain );
+    mWizardPageEnvOptions = new WizardPageEnvOptions( this );
 	mWizardPageCinderBlocks = new WizardPageCinderBlocks( this );
-	addPage( mWizardPageCinderBlocks );
-	
+
+    addPage( mWizardPageMain );
+    addPage( mWizardPageEnvOptions );
+    addPage( mWizardPageCinderBlocks );
+
 	connect( this, SIGNAL(customButtonClicked(int)), this, SLOT(preferencesClicked()) );
 	connect( this, SIGNAL(currentIdChanged(int)), this, SLOT(advancingToNextPage(int)) );
 	connect( this, SIGNAL(accepted()), this, SLOT(generateProject()) );
@@ -53,8 +57,7 @@ MainWizard::MainWizard(QWidget *parent) :
 	mPrefs = new Prefs( this );
 }
 
-
-void MainWizard::paintEvent( QPaintEvent *event )
+void MainWizard::paintEvent( QPaintEvent */*event*/ )
 {
 	QPainter painter( this );
 	QPixmap pmap(":/resources/background.png");
@@ -97,6 +100,21 @@ void MainWizard::loadTemplates()
 		// we'll call the system level exit.
 		exit( 0 );
 	}
+}
+
+int MainWizard::nextId() const
+{
+    // If we're coming from the first page and the user has enabled VC2013, we need to present some options
+    if( currentId() == 0 ) {
+        if( mWizardPageMain->isVc2013Selected() )
+            return 1;
+        else
+            return 2;
+    }
+    else if( currentId() == 2 ) // last page; we're done
+        return -1;
+    else
+        return 2;
 }
 
 void MainWizard::checkForFirstTime()
@@ -245,7 +263,7 @@ void MainWizard::refreshRequiredBlocks()
 
 void MainWizard::advancingToNextPage( int newId )
 {
-	if( newId == 1 ) { // update the cinderblock list if we're about to show it
+    if( newId == 2 ) { // update the cinderblock list if we're about to show it
 		mShouldCreateGitRepo = mWizardPageMain->shouldCreateGitRepo(); // do this first
 		refreshRequiredBlocks();
 		mWizardPageCinderBlocks->setCinderLocation( mWizardPageMain->getCinderLocation() );

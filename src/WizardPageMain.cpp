@@ -252,7 +252,7 @@ void WizardPageMain::on_locationButton_clicked()
     }
 }
 
-void WizardPageMain::on_cinderVersionComboBox_activated( QString value )
+void WizardPageMain::on_cinderVersionComboBox_activated( QString /*value*/ )
 {
 	if( ui->cinderVersionComboBox->currentIndex() < 0 )
 		return;
@@ -279,7 +279,7 @@ void WizardPageMain::updateProjectNameStatus()
 	}
 }
 
-void WizardPageMain::on_projectNameLineEdit_textChanged( QString text )
+void WizardPageMain::on_projectNameLineEdit_textChanged( QString /*text*/ )
 {
 	validateNextButton();
 	updateProjectNameStatus();

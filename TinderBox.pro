@@ -47,7 +47,8 @@ SOURCES += \
     src/parse/Vc2013Proj.cpp \
     src/parse/VcProj.cpp \
     src/parse/XCodeProj.cpp \
-    src/pugixml/pugixml.cpp
+    src/pugixml/pugixml.cpp \
+    src/WizardPageEnvOptions.cpp
 
 HEADERS  += \
     src/CinderBlock.h \
@@ -77,7 +78,8 @@ HEADERS  += \
     src/parse/VcProj.h \
     src/parse/XCodeProj.h \
     src/pugixml/pugiconfig.hpp \
-    src/pugixml/pugixml.hpp
+    src/pugixml/pugixml.hpp \
+    src/WizardPageEnvOptions.h
 
 RESOURCES += \
     TinderBox.qrc
@@ -87,4 +89,5 @@ FORMS += \
     ui/FirstTimeDlg.ui \
     ui/PrefsDlg.ui \
     ui/WizardPageCinderBlocks.ui \
-    ui/WizardPageMain.ui
+    ui/WizardPageMain.ui \
+    src/WizardPageEnvOptions.ui
