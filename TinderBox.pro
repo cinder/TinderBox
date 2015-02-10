@@ -26,7 +26,6 @@ SOURCES += \
     src/CinderBlockManager.cpp \
     src/ErrorList.cpp \
     src/FirstTimeDlg.cpp \
-    src/GeneratorVc11.cpp \
     src/GeneratorVc2012Winrt.cpp \
     src/GeneratorVc2013.cpp \
     src/GeneratorVcBase.cpp \
@@ -44,7 +43,6 @@ SOURCES += \
     src/WizardPageCinderBlocks.cpp \
     src/WizardPageMain.cpp \
     src/parse/PList.cpp \
-    src/parse/Vc11Proj.cpp \
     src/parse/Vc2012WinrtProj.cpp \
     src/parse/Vc2013Proj.cpp \
     src/parse/VcProj.cpp \
@@ -57,7 +55,6 @@ HEADERS  += \
     src/ErrorList.h \
     src/FirstTimeDlg.h \
     src/GeneratorBase.h \
-    src/GeneratorVc11.h \
     src/GeneratorVc2012Winrt.h \
     src/GeneratorVc2013.h \
     src/GeneratorVcBase.h \
@@ -75,7 +72,6 @@ HEADERS  += \
     src/WizardPageCinderBlocks.h \
     src/WizardPageMain.h \
     src/parse/PList.h \
-    src/parse/Vc11Proj.h \
     src/parse/Vc2012WinrtProj.h \
     src/parse/Vc2013Proj.h \
     src/parse/VcProj.h \

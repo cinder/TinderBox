@@ -14,11 +14,9 @@
         <file>resources/error.png</file>
         <file>resources/GenericCinderBlock.png</file>
         <file>icons/tinderbox_app_icon.ico</file>
-        <file>icons/vc11.png</file>
-        <file>icons/vc11_selected.png</file>
         <file>icons/vc2012_winrt_selected.png</file>
         <file>icons/vc2012_winrt.png</file>
         <file>icons/vc2013.png</file>
         <file>icons/vc2013_selected.png</file>
-	</qresource>
+    </qresource>
 </RCC>

@@ -27,7 +27,7 @@
 #include <iostream>
 
 // add to mPlatformConditions too
-enum { XCODE_INDEX, XCODE_IOS_INDEX, VC11_INDEX, VC2012_WINRT_INDEX, VC2013_INDEX, NUM_PLATFORMS };
+enum { XCODE_INDEX, XCODE_IOS_INDEX, VC2012_WINRT_INDEX, VC2013_INDEX, NUM_PLATFORMS };
 
 WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	QWizardPage(parent),
@@ -44,8 +44,6 @@ WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	mPlatformConditions.push_back( xcodePlatCond );
 	QMap<QString,QString> xcodeIosPlatCond; xcodeIosPlatCond["os"] = "ios";
 	mPlatformConditions.push_back( xcodeIosPlatCond );
-	QMap<QString,QString> vc11PlatCond; vc11PlatCond["os"] = "msw"; vc11PlatCond["compiler"] = "vc2012";
-	mPlatformConditions.push_back( vc11PlatCond );
 	QMap<QString,QString> vc2012WinrtPlatCond; vc2012WinrtPlatCond["os"] = "winrt"; vc2012WinrtPlatCond["compiler"] = "vc2012";
 	mPlatformConditions.push_back( vc2012WinrtPlatCond );
 	QMap<QString,QString> vc2013PlatCond; vc2013PlatCond["os"] = "msw"; vc2013PlatCond["compiler"] = "vc2013";
@@ -61,7 +59,7 @@ WizardPageMain::WizardPageMain( MainWizard *parent ) :
 #endif
 
 #if defined Q_OS_WIN
-	ui->compilerList->item( VC11_INDEX )->setSelected( true );
+    ui->compilerList->item( VC2013_INDEX )->setSelected( true );
 #endif
 
 	// Update controls
@@ -172,11 +170,6 @@ bool WizardPageMain::isXcodeSelected() const
 bool WizardPageMain::isXcodeIosSelected() const
 {
     return ui->compilerList->item( XCODE_IOS_INDEX )->isSelected();
-}
-
-bool WizardPageMain::isVc11Selected() const
-{
-	return ui->compilerList->item( VC11_INDEX )->isSelected();
 }
 
 bool WizardPageMain::isVc2012WinrtSelected() const

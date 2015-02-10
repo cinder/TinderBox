@@ -8,7 +8,6 @@
 #include "CinderBlockManager.h"
 #include "GeneratorXcodeMac.h"
 #include "GeneratorXcodeIos.h"
-#include "GeneratorVc11.h"
 #include "GeneratorVc2012Winrt.h"
 #include "GeneratorVc2013.h"
 #include "Util.h"
@@ -155,8 +154,6 @@ void MainWizard::generateProject()
 			gen.addGenerator( new GeneratorXcodeMac() );
 		if( mWizardPageMain->isXcodeIosSelected() )
 			gen.addGenerator( new GeneratorXcodeIos() );
-		if( mWizardPageMain->isVc11Selected() )
-			gen.addGenerator( new GeneratorVc11() );
 		if( mWizardPageMain->isVc2012WinrtSelected() )
 			gen.addGenerator( new GeneratorVc2012Winrt() );
 		if( mWizardPageMain->isVc2013Selected() )
