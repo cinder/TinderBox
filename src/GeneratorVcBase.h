@@ -13,11 +13,11 @@ class GeneratorVcBase : public GeneratorBase {
   public:
 	GeneratorVcBase( const QString &foundationName );
 
-	virtual QMap<QString,QString>	getConditions() const = 0;
-	virtual QString					getCompiler() const = 0;
-	virtual std::vector<QString>	getArchitectures() const = 0;
-	virtual bool					getSlnDeploy() const = 0;
-	virtual bool					getUseRcFile() const = 0;
+    virtual QMap<QString,QString>                       getConditions() const = 0;
+    virtual QString                                     getCompiler() const = 0;
+    virtual std::vector<VcProj::ProjectConfiguration>	getPlatformConfigurations() const = 0;
+    virtual bool                                        getSlnDeploy() const = 0;
+    virtual bool                                        getUseRcFile() const = 0;
 
 	virtual void					generate( Instancer *master );
   protected:

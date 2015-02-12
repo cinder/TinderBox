@@ -17,9 +17,10 @@ typedef QSharedPointer<class VcProj>		VcProjRef;
 class VcProj
 {
   public:
+	class ProjectConfiguration;
 	virtual ~VcProj() {}
 
-    void		setupNew( const QString &name, const std::vector<QString> &architectures, bool slnDeploy, bool useRcFile );
+	void		setupNew( const QString &name, const std::vector<ProjectConfiguration> &architectures, bool slnDeploy, bool useRcFile );
 
 	// high-level manipulation functions
 	void		addSourceFile( const QString &fileSystemPath, const QString &virtualPath );
@@ -34,6 +35,7 @@ class VcProj
 	void		addResourceFile( const QString &name, const QString &fileSystemPath, const QString &type, int id = -1 );
 	void		addPreprocessorDefine( const QString &config, const QString &value );
 	void		setTargetExtension( const QString &config, const QString &platform, const QString &extension );
+	void        removeProjectConfiguration( const ProjectConfiguration &config );
 
 	QString		getSlnString() const;
 
@@ -85,6 +87,7 @@ class VcProj
 		int				mId;
 	};
 
+	// $(Configuration)|$(Platform)
 	class ProjectConfiguration {
 	  public:
 		ProjectConfiguration( const QString &config, const QString &platform )
@@ -95,8 +98,16 @@ class VcProj
 		const QString&	getPlatform() const { return mPlatform; }
 		QString			asString() const { return mConfig + "|" + mPlatform; }
 
+		const QMap<QString,QString>&		getConditions() const { return mConditions; }
+		void								setConditions( const QMap<QString,QString> &conditions )
+		{ mConditions = conditions; }
+
+		bool operator==( const ProjectConfiguration &rhs ) const
+		{ return ( mConfig == rhs.mConfig ) && ( mPlatform == rhs.mPlatform ); }
+
 	  private:
-		QString			mConfig, mPlatform;
+		QString					mConfig, mPlatform;
+		QMap<QString,QString>	mConditions;
 	};
 
   protected:
@@ -105,11 +116,12 @@ class VcProj
 	QString		getProjGuid() const { return mProjGuid; }
 	QString		getProjName() const { return mProjName; }
 
-	void		parseProjectConfigurations();
+	void        removeUnusedProjectConfigurations();
 
 	pugi::xml_node	getSourceItemGroup();
 	pugi::xml_node	getResourceItemGroup();
 	pugi::xml_node	getHeaderItemGroup();
+	pugi::xml_node  findItemDefinitionGroup( const ProjectConfiguration &projConfig );
 	pugi::xml_node	findItemDefinitionGroup( const QString &config, const QString &platform );
 	void			appendToDelimitedList( pugi::xml_node *node, const QString &value, const QString &delimeters );
 	bool			nodeConditionsMatch( const pugi::xml_node &node, const QString &config, const QString &platform );
@@ -123,8 +135,7 @@ class VcProj
 	pugi::xml_node						mProjSourceItemGroup, mProjHeaderItemGroup;
 	QString								mResourcesHeaderPath;
 	QList<Resource>						mRcResources;
-	QList<ProjectConfiguration>			mProjectConfigurations; // $(Configuration)|$(Platform)
-	std::vector<QString>				mPlatforms;
+	std::vector<ProjectConfiguration>	mProjectConfigurations; // $(Configuration)|$(Platform)
 	bool								mSlnDeploy; // ActiveCfg | Build | (Deploy?) in .sln file
 	bool								mUseRcFile; // Use Resources.rc or include resources in Assets
 };

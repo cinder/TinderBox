@@ -1,7 +1,6 @@
 #include "VcProj.h"
 #include "Util.h"
 #include <QUuid>
-#include <sstream>
 
 VcProj::VcProj( const QString &vcProjString, const QString &vcProjFiltersString )
 {
@@ -13,8 +12,6 @@ VcProj::VcProj( const QString &vcProjString, const QString &vcProjFiltersString 
 		throw VcProjExc( "Failed to parse VcProj" );
 	}
 
-	parseProjectConfigurations();
-
 	// .vcxproj.filters
 	QSharedPointer<pugi::xml_document> projFiltersDom( new pugi::xml_document() );
 	std::string vcProjFiltersStdStr = vcProjFiltersString.toStdString();
@@ -25,9 +22,9 @@ VcProj::VcProj( const QString &vcProjString, const QString &vcProjFiltersString 
 	mFilters = QSharedPointer<Filters>( new Filters( projFiltersDom ) );
 }
 
-void VcProj::setupNew( const QString &name, const std::vector<QString> &platforms, bool slnDeploy, bool useRcFile )
+void VcProj::setupNew( const QString &name, const std::vector<VcProj::ProjectConfiguration> &projectConfigurations, bool slnDeploy, bool useRcFile )
 {
-	mPlatforms = platforms;
+	mProjectConfigurations = projectConfigurations;
 	mSlnDeploy = slnDeploy;
     mUseRcFile = useRcFile;
 	mProjGuid = QUuid::createUuid().toString().toUpper();
@@ -39,6 +36,8 @@ void VcProj::setupNew( const QString &name, const std::vector<QString> &platform
 	else
 		throw VcProjExc( "Unable to locate <ProjectGuid> node" );
 
+	removeUnusedProjectConfigurations();
+
 	mProjName = name;
 	pugi::xpath_node projectRoot = mProjDom->select_single_node( "/Project/PropertyGroup/RootNamespace" );
 	if( projectRoot )
@@ -49,15 +48,55 @@ void VcProj::setupNew( const QString &name, const std::vector<QString> &platform
 		mFilters = QSharedPointer<Filters>( new Filters() );
 }
 
-void VcProj::parseProjectConfigurations()
+void VcProj::removeProjectConfiguration( const ProjectConfiguration &config )
 {
+	// delete the <ProjectConfiguration> itself
+	std::string projectConfigurationNodesXPath = "/Project/ItemGroup[@Label=\"ProjectConfigurations\"]/ProjectConfiguration";
+	pugi::xpath_node_set configurationNodes = mProjDom->select_nodes( projectConfigurationNodesXPath.c_str() );
+	for( pugi::xpath_node_set::const_iterator it = configurationNodes.begin(); it != configurationNodes.end(); ++it ) {
+		if( QString( it->node().attribute( "Include" ).value() ) == config.asString() ) {
+			it->node().parent().remove_child( it->node() );
+			break;
+		}
+	}
+
+	// delete all nodes of the form
+	// Condition="'$(Configuration)|$(Platform)'=='Debug_ANGLE|Win32'"
+	std::string conditionString = "'$(Configuration)|$(Platform)'=='" + config.asString().toStdString() + "'";
+	std::string conditionXPath = "//*[@Condition=\"" + conditionString + "\"]";
+	pugi::xpath_node_set conditionNodes = mProjDom->select_nodes( conditionXPath.c_str() );
+	for( pugi::xpath_node_set::const_iterator it = conditionNodes.begin(); it != conditionNodes.end(); ++it ) {
+		it->node().parent().remove_child( it->node() );
+	}
+}
+
+void VcProj::removeUnusedProjectConfigurations()
+{
+	std::vector<ProjectConfiguration> configsToBeDeleted;
+	// iterate the vcxproj's 'ProjectConfigurations'
 	pugi::xpath_node_set itemGroup = mProjDom->select_nodes("/Project/ItemGroup[@Label=\"ProjectConfigurations\"]/ProjectConfiguration");
 	for( pugi::xpath_node_set::const_iterator it = itemGroup.begin(); it != itemGroup.end(); ++it ) {
 		pugi::xpath_node node = it->node();
 		pugi::xpath_node config = it->node().child( "Configuration" );
-		mProjectConfigurations.push_back( ProjectConfiguration( it->node().child( "Configuration" ).first_child().value(), it->node().child( "Platform" ).first_child().value() ) );
-		std::cout << qPrintable( mProjectConfigurations.back().asString() ) << std::endl;
+		ProjectConfiguration parsedConfig( it->node().child( "Configuration" ).first_child().value(), it->node().child( "Platform" ).first_child().value() );
+		bool found = false;
+		for( const auto &config : mProjectConfigurations ) {
+			if( config == parsedConfig ) {
+				found = true;
+				break;
+			}
+		}
+		if( ! found ) {
+			configsToBeDeleted.push_back( parsedConfig );
+			std::cout << "Removing " << qPrintable( mProjectConfigurations.back().asString() ) << std::endl;
+		}
+		else {
+			std::cout << "Keeping " << qPrintable( mProjectConfigurations.back().asString() ) << std::endl;
+		}
 	}
+
+	for( auto &doomedConfig : configsToBeDeleted )
+		removeProjectConfiguration( doomedConfig );
 }
 
 void VcProj::addSourceFile( const QString &fileSystemPath, const QString &virtualPath )
@@ -79,8 +118,8 @@ void VcProj::addHeaderFile( const QString &fileSystemPath, const QString &virtua
 
 void VcProj::addStaticLibrary( const QString &config, const QString &path )
 {
-	for( std::vector<QString>::const_iterator platIt = mPlatforms.begin(); platIt != mPlatforms.end(); ++platIt ) {
-		pugi::xml_node defGroup = findItemDefinitionGroup( config, *platIt );
+	for( auto &projConfig : mProjectConfigurations ) {
+pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
 		pugi::xml_node link = defGroup.child( "Link" );
 		pugi::xml_node additionalDependencies = link.child( "AdditionalDependencies" );
 		appendToDelimitedList( &additionalDependencies, path, ";" );
@@ -94,8 +133,8 @@ void VcProj::addBuildCopy( const QString &config, const QString &path )
 
 void VcProj::appendPostBuildCommand( const QString &config, const QString &command )
 {
-	for( std::vector<QString>::const_iterator platIt = mPlatforms.begin(); platIt != mPlatforms.end(); ++platIt ) {
-		pugi::xml_node defGroup = findItemDefinitionGroup( config, *platIt );
+	for( auto &projConfig : mProjectConfigurations ) {
+pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
 		pugi::xml_node postBuild = defGroup.child( "PostBuildEvent" );
 		if( postBuild.empty() )
 			postBuild = defGroup.append_child( "PostBuildEvent" );
@@ -108,8 +147,8 @@ void VcProj::appendPostBuildCommand( const QString &config, const QString &comma
 
 void VcProj::addHeaderPath( const QString &config, const QString &path )
 {
-	for( std::vector<QString>::const_iterator platIt = mPlatforms.begin(); platIt != mPlatforms.end(); ++platIt ) {
-		pugi::xml_node defGroup = findItemDefinitionGroup( config, *platIt );
+	for( auto &projConfig : mProjectConfigurations ) {
+pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
 		pugi::xml_node clCompile = defGroup.child( "ClCompile" );
 		pugi::xml_node additionalInclude = clCompile.child( "AdditionalIncludeDirectories" );
 		appendToDelimitedList( &additionalInclude, path, ";" );
@@ -118,8 +157,8 @@ void VcProj::addHeaderPath( const QString &config, const QString &path )
 
 void VcProj::addLibraryPath( const QString &config, const QString &path )
 {
-	for( std::vector<QString>::const_iterator platIt = mPlatforms.begin(); platIt != mPlatforms.end(); ++platIt ) {
-		pugi::xml_node defGroup = findItemDefinitionGroup( config, *platIt );
+	for( auto &projConfig : mProjectConfigurations ) {
+pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
 		pugi::xml_node clCompile = defGroup.child( "Link" );
 		pugi::xml_node additionalLib = clCompile.child( "AdditionalLibraryDirectories" );
 		appendToDelimitedList( &additionalLib, path, ";" );
@@ -157,8 +196,8 @@ void VcProj::addResourceFile( const QString &name, const QString &fileSystemPath
 
 void VcProj::addPreprocessorDefine( const QString &config, const QString &value )
 {
-	for( std::vector<QString>::const_iterator platIt = mPlatforms.begin(); platIt != mPlatforms.end(); ++platIt ) {
-		pugi::xml_node defGroup = findItemDefinitionGroup( config, *platIt );
+	for( auto &projConfig : mProjectConfigurations ) {
+pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
 		pugi::xml_node clCompile = defGroup.child( "ClCompile" );
 		pugi::xml_node additionalInclude = clCompile.child( "PreprocessorDefinitions" );
 		appendToDelimitedList( &additionalInclude, value, ";" );
@@ -209,6 +248,11 @@ void VcProj::setTargetExtension( const QString &config, const QString &platform,
 		pugi::xml_attribute attrNode = newNode.append_attribute( "Condition" );
 		attrNode.set_value( getConditionString( config, platform ).c_str() );
 	}
+}
+
+pugi::xml_node VcProj::findItemDefinitionGroup( const ProjectConfiguration &projConfig )
+{
+	return findItemDefinitionGroup( projConfig.getConfig(), projConfig.getPlatform() );
 }
 
 pugi::xml_node VcProj::findItemDefinitionGroup( const QString &config, const QString &platform )
@@ -294,27 +338,17 @@ QString VcProj::getSlnString() const
 	result += "EndProject\r\n";
 	result += "Global\r\n";
 		result += "\tGlobalSection(SolutionConfigurationPlatforms) = preSolution\r\n";
-			for( int i = 0; i < mPlatforms.size(); ++i )
-				result += "\t\tDebug|" + mPlatforms[i] + " = Debug|" + mPlatforms[i] + "\r\n";
-			for( int i = 0; i < mPlatforms.size(); ++i )
-				result += "\t\tRelease|" + mPlatforms[i] + " = Release|" + mPlatforms[i] + "\r\n";
+			for( int i = 0; i < mProjectConfigurations.size(); ++i )
+				result += "\t\t" + mProjectConfigurations[i].asString() + " = " + mProjectConfigurations[i].asString() + "\r\n";
 		result += "\tEndGlobalSection\r\n";
 		result += "\tGlobalSection(ProjectConfigurationPlatforms) = postSolution\r\n";
 
-		for( int i = 0; i < mPlatforms.size(); ++i ) {
-			const QString platform = mPlatforms[i];
-			result += "\t\t" + getProjGuid() + ".Debug|" + platform + ".ActiveCfg = Debug|" + platform + "\r\n";
-			result += "\t\t" + getProjGuid() + ".Debug|" + platform + ".Build.0 = Debug|" + platform + "\r\n";
+		for( int i = 0; i < mProjectConfigurations.size(); ++i ) {
+			const auto projConfig = mProjectConfigurations[i];
+			result += "\t\t" + getProjGuid() + "." + projConfig.asString() + ".ActiveCfg = " + projConfig.asString() + "\r\n";
+			result += "\t\t" + getProjGuid() + "." + projConfig.asString() + ".Build.0 = " + projConfig.asString() + "\r\n";
 			if( mSlnDeploy )
-				result += "\t\t" + getProjGuid() + ".Debug|" + platform + ".Deploy.0 = Debug|" + platform + "\r\n";
-		}
-
-		for( int i = 0; i < mPlatforms.size(); ++i ) {
-			const QString platform = mPlatforms[i];
-			result += "\t\t" + getProjGuid() + ".Release|" + platform + ".ActiveCfg = Release|" + platform + "\r\n";
-			result += "\t\t" + getProjGuid() + ".Release|" + platform + ".Build.0 = Release|" + platform + "\r\n";
-			if( mSlnDeploy )
-				result += "\t\t" + getProjGuid() + ".Release|" + platform + ".Deploy.0 = Release|" + platform + "\r\n";
+				result += "\t\t" + getProjGuid() + "." + projConfig.asString() + ".Deploy.0 = " + projConfig.asString() + "\r\n";
 		}
 
 		result += "\tEndGlobalSection\r\n";
@@ -359,6 +393,12 @@ void VcProj::write( const QString &directoryPath, const QString &namePrefix ) co
 //		writeResourceHeader( absResourcesHeaderPath );
 	}
 
+	struct xml_string_writer: pugi::xml_writer
+	{
+		std::string result;
+		virtual void write(const void* data, size_t size) { result += std::string(static_cast<const char*>(data), size); }
+	};
+
 	{ // write vcxproj
 		QString writePath = dir.absoluteFilePath( namePrefix + ".vcxproj" );
 		QFile outFile( writePath );
@@ -367,9 +407,9 @@ void VcProj::write( const QString &directoryPath, const QString &namePrefix ) co
 
 		QTextStream ts( &outFile );
 		ts.setCodec( "UTF-8" );
-		std::stringstream ss;
-		mProjDom->print( ss, "  " );
-		QString str = QString::fromUtf8( ss.str().c_str() ).replace( "\n", "\r\n" );
+		xml_string_writer writer;
+		mProjDom->print( writer, "  " );
+		QString str = QString::fromUtf8( writer.result.c_str() ).replace( "\n", "\r\n" );
 		ts << str;
 	}
 
@@ -381,9 +421,9 @@ void VcProj::write( const QString &directoryPath, const QString &namePrefix ) co
 
 		QTextStream ts( &outFile );
 		ts.setCodec( "UTF-8" );
-		std::stringstream ss;
-		mFilters->getDom()->print( ss, "  " );
-		QString str = QString::fromUtf8( ss.str().c_str() ).replace( "\n", "\r\n" );
+		xml_string_writer writer;
+		mFilters->getDom()->print( writer, "  " );
+		QString str = QString::fromUtf8( writer.result.c_str() ).replace( "\n", "\r\n" );
 		ts << str;
 	}
 

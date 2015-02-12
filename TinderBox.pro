@@ -90,4 +90,4 @@ FORMS += \
     ui/PrefsDlg.ui \
     ui/WizardPageCinderBlocks.ui \
     ui/WizardPageMain.ui \
-    src/WizardPageEnvOptions.ui
+	ui/WizardPageEnvOptions.ui

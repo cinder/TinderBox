@@ -18,15 +18,26 @@ QString GeneratorVc2013::getCompiler() const
 	return QString( "120" );
 }
 
-VcProjRef GeneratorVc2013::createVcProj( const QString &vcProj, const QString &vcProjFilters )
+VcProjRef GeneratorVc2013::createVcProj( const QString &VcProj, const QString &VcProjFilters )
 {
-	return Vc2013Proj::createFromString( vcProj, vcProjFilters );
+    return Vc2013Proj::createFromString( VcProj, VcProjFilters );
 }
 
-std::vector<QString> GeneratorVc2013::getArchitectures() const
+std::vector<VcProj::ProjectConfiguration> GeneratorVc2013::getPlatformConfigurations() const
 {
-	std::vector<QString> result;
-	result.push_back( QString::fromUtf8( "Win32" ) );
+    std::vector<VcProj::ProjectConfiguration> result;
+    result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "Win32" ) ) );
+	{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "debug";
+	result.back().setConditions( conditions );}
+
+	result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "Win32" ) ) );
+	{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "release";
+	result.back().setConditions( conditions );}
+
+	result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug_ANGLE" ), QString::fromUtf8( "Win32" ) ) );
+	{auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "debug";
+	result.back().setConditions( conditions );}
+
 	return result;
 }
 

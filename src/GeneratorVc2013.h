@@ -12,11 +12,11 @@ class GeneratorVc2013 : public GeneratorVcBase {
 		: GeneratorVcBase( "vc2013" )
 	{}
 
-	virtual QMap<QString,QString>	getConditions() const;
-	virtual QString					getCompiler() const;
-	virtual std::vector<QString>	getArchitectures() const;
-	virtual bool					getSlnDeploy() const;
-	virtual bool					getUseRcFile() const { return true; }
+    virtual QMap<QString,QString>               getConditions() const;
+    virtual QString                             getCompiler() const;
+    std::vector<VcProj::ProjectConfiguration>	getPlatformConfigurations() const override;
+    virtual bool                                getSlnDeploy() const;
+    virtual bool                                getUseRcFile() const { return true; }
 
 	virtual VcProjRef	createVcProj( const QString &vcProj, const QString &vcProjFilters );
 };

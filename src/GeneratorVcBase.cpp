@@ -42,12 +42,14 @@ void GeneratorVcBase::generate( Instancer *master )
 	QString absDirPath = master->createDirectory( mFoundationName );
 	QString cinderPath = master->getWinRelCinderPath( absDirPath );
 
+    // Load the foundation .vcxproj and .filters files as strings; replace _TBOX_CINDER_PATH_ appropriately
 	QString replacedVcproj = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( mFoundationName + "/foundation.vcxproj" ),
 		master->getNamePrefix(), cinderPath );
 	QString replacedVcprojFilters = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( mFoundationName + "/foundation.vcxproj.filters" ),
 		master->getNamePrefix(), cinderPath );
-	VcProjRef vcProj = createVcProj( replacedVcproj, replacedVcprojFilters );
-	vcProj->setupNew( master->getNamePrefix(), getArchitectures(), getSlnDeploy(), getUseRcFile() );
+    // parse these strings into an instance of VcProj
+    VcProjRef vcProj = createVcProj( replacedVcproj, replacedVcprojFilters );
+    vcProj->setupNew( master->getNamePrefix(), getPlatformConfigurations(), getSlnDeploy(), getUseRcFile() );
 
 	QList<Template::OutputExtension> outExtensionsDebug = master->getOutputExtensionsMatchingConditions( debugConditions );
 	if( ! outExtensionsDebug.empty() )

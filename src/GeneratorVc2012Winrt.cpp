@@ -18,18 +18,22 @@ QString GeneratorVc2012Winrt::getCompiler() const
 	return QString( "110" );
 }
 
-VcProjRef GeneratorVc2012Winrt::createVcProj( const QString &vcProj, const QString &vcProjFilters )
+VcProjRef GeneratorVc2012Winrt::createVcProj( const QString &VcProj, const QString &VcProjFilters )
 {
-	return Vc2012WinrtProj::createFromString( vcProj, vcProjFilters );
+    return Vc2012WinrtProj::createFromString( VcProj, VcProjFilters );
 }
 
-std::vector<QString> GeneratorVc2012Winrt::getArchitectures() const
+std::vector<VcProj::ProjectConfiguration> GeneratorVc2012Winrt::getPlatformConfigurations() const
 {
-	std::vector<QString> result;
-	result.push_back( QString::fromUtf8( "ARM" ) );
-	result.push_back( QString::fromUtf8( "Win32" ) );
-	result.push_back( QString::fromUtf8( "x64" ) );
-	return result;
+    std::vector<VcProj::ProjectConfiguration> result;
+    result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "ARM" ) ) );
+    result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "ARM" ) ) );
+    result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "Win32" ) ) );
+    result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "Win32" ) ) );
+    result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "x64" ) ) );
+    result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "x64" ) ) );
+
+    return result;
 }
 
 bool GeneratorVc2012Winrt::getSlnDeploy() const
