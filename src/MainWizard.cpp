@@ -25,6 +25,8 @@
 #include <QMainWindow>
 #include <QCoreApplication>
 
+enum { PAGE_MAIN = 0, PAGE_ENV_OPTIONS = 1, PAGE_CINDER_BLOCKS = 2 };
+
 MainWizard::MainWizard(QWidget *parent) :
 	QWizard(parent),
 	mWizardPageMain( 0 ), mWizardPageCinderBlocks( 0 ) // NULL to ensure we don't update them prematurely
@@ -105,16 +107,16 @@ void MainWizard::loadTemplates()
 int MainWizard::nextId() const
 {
     // If we're coming from the first page and the user has enabled VC2013, we need to present some options
-    if( currentId() == 0 ) {
+	if( currentId() == PAGE_MAIN ) {
         if( mWizardPageMain->isVc2013Selected() )
-            return 1;
+			return PAGE_ENV_OPTIONS;
         else
-            return 2;
+			return PAGE_CINDER_BLOCKS;
     }
-    else if( currentId() == 2 ) // last page; we're done
+	else if( currentId() == PAGE_CINDER_BLOCKS ) // last page; we're done
         return -1;
     else
-        return 2;
+		return PAGE_CINDER_BLOCKS;
 }
 
 void MainWizard::checkForFirstTime()
@@ -269,7 +271,7 @@ void MainWizard::refreshRequiredBlocks()
 
 void MainWizard::advancingToNextPage( int newId )
 {
-    if( newId == 2 ) { // update the cinderblock list if we're about to show it
+	if( newId == PAGE_CINDER_BLOCKS ) { // update the cinderblock list if we're about to show it
 		mShouldCreateGitRepo = mWizardPageMain->shouldCreateGitRepo(); // do this first
 		refreshRequiredBlocks();
 		mWizardPageCinderBlocks->setCinderLocation( mWizardPageMain->getCinderLocation() );

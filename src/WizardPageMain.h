@@ -43,6 +43,7 @@ protected:
 private:
 	Ui::WizardPageMain	*ui;
 	MainWizard		*mParent;
+	bool			mInitialized;
 
 	QList<ProjectTemplate>					mProjectTemplates;
     QPalette                                mLocationPaletteOrig;

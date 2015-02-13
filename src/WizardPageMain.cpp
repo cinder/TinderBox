@@ -29,7 +29,7 @@ enum { XCODE_INDEX, XCODE_IOS_INDEX, VC2012_WINRT_INDEX, VC2013_INDEX, NUM_PLATF
 
 WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	QWizardPage(parent),
-	ui(new Ui::WizardPageMain), mParent( parent )
+	ui(new Ui::WizardPageMain), mParent( parent ), mInitialized( false )
 {
     // UI
     ui->setupUi( this );
@@ -72,6 +72,8 @@ WizardPageMain::~WizardPageMain()
 
 void WizardPageMain::initializePage()
 {
+	mInitialized = true;
+	updateProjectNameStatus();
 }
 
 void WizardPageMain::updateTemplates()
@@ -235,6 +237,7 @@ bool WizardPageMain::isComplete() const
 void WizardPageMain::validateNextButton()
 {
 	emit QWizardPage::completeChanged();
+	updateProjectNameStatus();
 }
 
 void WizardPageMain::on_locationButton_clicked()
@@ -274,7 +277,11 @@ void WizardPageMain::updateProjectNameStatus()
 		QPalette pal = ui->projectNameLineEdit->palette();
 		pal.setColor( QPalette::Base, QColor( 0xFF, 0x63, 0x47 ) );
 		ui->projectNameLineEdit->setPalette( pal );
+		if( mInitialized )
+			wizard()->button( QWizard::NextButton )->setEnabled( false );
 	}
+	else if( mInitialized )
+		wizard()->button( QWizard::NextButton )->setEnabled( true );
 }
 
 void WizardPageMain::on_projectNameLineEdit_textChanged( QString /*text*/ )
