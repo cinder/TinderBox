@@ -26,17 +26,39 @@ VcProjRef GeneratorVc2013::createVcProj( const QString &VcProj, const QString &V
 std::vector<VcProj::ProjectConfiguration> GeneratorVc2013::getPlatformConfigurations() const
 {
     std::vector<VcProj::ProjectConfiguration> result;
-    result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "Win32" ) ) );
-	{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "debug";
-	result.back().setConditions( conditions );}
 
-	result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "Win32" ) ) );
-	{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "release";
-	result.back().setConditions( conditions );}
+	// Win32 GL
+	if( mOptions.mEnableWin32 && mOptions.mEnableDesktopGl ) {
+		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "Win32" ) ) );
+		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "debug";
+		result.back().setConditions( conditions );}
 
-	result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug_ANGLE" ), QString::fromUtf8( "Win32" ) ) );
-	{auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "debug";
-	result.back().setConditions( conditions );}
+		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "Win32" ) ) );
+		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "release";
+		result.back().setConditions( conditions );}
+	}
+
+	// Win32 ANGLE
+	if( mOptions.mEnableWin32 && mOptions.mEnableAngle ) {
+		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug_ANGLE" ), QString::fromUtf8( "Win32" ) ) );
+		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "debug";
+		result.back().setConditions( conditions );}
+
+		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release_ANGLE" ), QString::fromUtf8( "Win32" ) ) );
+		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "release";
+		result.back().setConditions( conditions );}
+	}
+
+	// x64 GL
+	if( mOptions.mEnableX64 && mOptions.mEnableDesktopGl ) {
+		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "x64" ) ) );
+		{auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "debug";
+		result.back().setConditions( conditions );}
+
+		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "x64" ) ) );
+		{auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "release";
+		result.back().setConditions( conditions );}
+	}
 
 	return result;
 }

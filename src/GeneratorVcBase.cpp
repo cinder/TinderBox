@@ -10,23 +10,23 @@ GeneratorVcBase::GeneratorVcBase( const QString &foundationName )
 {
 }
 
-void GeneratorVcBase::setupIncludePaths( VcProjRef proj, Instancer *master, QMap<QString,QString> &conditions, const QString &config, const QString &absPath, const QString &cinderPath )
+void GeneratorVcBase::setupIncludePaths( VcProjRef proj, Instancer *master, const VcProj::ProjectConfiguration &config, const QString &absPath, const QString &cinderPath )
 {
-	QList<Template::IncludePath> includePaths = master->getIncludePathsMatchingConditions( conditions );
+	QList<Template::IncludePath> includePaths = master->getIncludePathsMatchingConditions( config.getConditions() );
 	for( QList<Template::IncludePath>::ConstIterator pathIt = includePaths.begin(); pathIt != includePaths.end(); ++pathIt )
 		proj->addHeaderPath( config, pathIt->getWinOutputPathRelativeTo( absPath, cinderPath ) );
 }
 
-void GeneratorVcBase::setupLibraryPaths( VcProjRef proj, Instancer *master, QMap<QString,QString> &conditions, const QString &config, const QString &absPath, const QString &cinderPath )
+void GeneratorVcBase::setupLibraryPaths( VcProjRef proj, Instancer *master, const VcProj::ProjectConfiguration &config, const QString &absPath, const QString &cinderPath )
 {
-	QList<Template::LibraryPath> libraryPaths = master->getLibraryPathsMatchingConditions( conditions );
+	QList<Template::LibraryPath> libraryPaths = master->getLibraryPathsMatchingConditions( config.getConditions() );
 	for( QList<Template::LibraryPath>::ConstIterator pathIt = libraryPaths.begin(); pathIt != libraryPaths.end(); ++pathIt )
 		proj->addLibraryPath( config, pathIt->getWinOutputPathRelativeTo( absPath, cinderPath ) );
 }
 
-void GeneratorVcBase::setupPreprocessorDefines( VcProjRef proj, Instancer *master, QMap<QString,QString> &conditions, const QString &config )
+void GeneratorVcBase::setupPreprocessorDefines( VcProjRef proj, Instancer *master, const VcProj::ProjectConfiguration &config )
 {
-	QList<Template::PreprocessorDefine> preprocessorDefines = master->getPreprocessorDefinesMatchingConditions( conditions );
+	QList<Template::PreprocessorDefine> preprocessorDefines = master->getPreprocessorDefinesMatchingConditions( config.getConditions() );
 	for( QList<Template::PreprocessorDefine>::ConstIterator defineIt = preprocessorDefines.begin(); defineIt != preprocessorDefines.end(); ++defineIt )
 		proj->addPreprocessorDefine( config, defineIt->getValue() );
 }
@@ -35,9 +35,9 @@ void GeneratorVcBase::generate( Instancer *master )
 {
 	QMap<QString,QString> conditions = getConditions();
 	conditions["config"] = "*";
-	QMap<QString,QString> debugConditions = conditions; debugConditions["config"] = "debug";
-	QMap<QString,QString> releaseConditions = conditions; releaseConditions["config"] = "release";
 	QList<Template::File> files = master->getFilesMatchingConditions( conditions );
+
+	auto projectConfigurations = getPlatformConfigurations();
 
 	QString absDirPath = master->createDirectory( mFoundationName );
 	QString cinderPath = master->getWinRelCinderPath( absDirPath );
@@ -51,31 +51,20 @@ void GeneratorVcBase::generate( Instancer *master )
     VcProjRef vcProj = createVcProj( replacedVcproj, replacedVcprojFilters );
     vcProj->setupNew( master->getNamePrefix(), getPlatformConfigurations(), getSlnDeploy(), getUseRcFile() );
 
-	QList<Template::OutputExtension> outExtensionsDebug = master->getOutputExtensionsMatchingConditions( debugConditions );
-	if( ! outExtensionsDebug.empty() )
-		vcProj->setTargetExtension( "Debug", "Win32", outExtensionsDebug.first().getValue() );
+	for( const auto &config : projectConfigurations ) {
+		QList<Template::OutputExtension> outExtensions = master->getOutputExtensionsMatchingConditions( config.getConditions() );
+		if( ! outExtensions.empty() )
+			vcProj->setTargetExtension( config, outExtensions.first().getValue() );
 
-	QList<Template::OutputExtension> outExtensionsRelease = master->getOutputExtensionsMatchingConditions( releaseConditions );
-	if( ! outExtensionsRelease.empty() )
-		vcProj->setTargetExtension( "Release", "Win32", outExtensionsRelease.first().getValue() );
+		setupIncludePaths( vcProj, master, config, absDirPath, cinderPath );
+		setupLibraryPaths( vcProj, master, config, absDirPath, cinderPath );
+		setupPreprocessorDefines( vcProj, master, config );
 
-	setupIncludePaths( vcProj, master, debugConditions, "Debug", absDirPath, cinderPath );
-	setupIncludePaths( vcProj, master, releaseConditions, "Release", absDirPath, cinderPath );
-
-	setupLibraryPaths( vcProj, master, debugConditions, "Debug", absDirPath, cinderPath );
-	setupLibraryPaths( vcProj, master, releaseConditions, "Release", absDirPath, cinderPath );
-
-	setupPreprocessorDefines( vcProj, master, debugConditions, "Debug" );
-	setupPreprocessorDefines( vcProj, master, releaseConditions, "Release" );
-
-	// setup static libraries
-	QList<Template::StaticLibrary> debugStaticLibraries = master->getStaticLibrariesMatchingConditions( debugConditions );
-	for( QList<Template::StaticLibrary>::ConstIterator pathIt = debugStaticLibraries.begin(); pathIt != debugStaticLibraries.end(); ++pathIt )
-		vcProj->addStaticLibrary( "Debug", pathIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ) );
-
-	QList<Template::StaticLibrary> releaseStaticLibraries = master->getStaticLibrariesMatchingConditions( releaseConditions );
-	for( QList<Template::StaticLibrary>::ConstIterator pathIt = releaseStaticLibraries.begin(); pathIt != releaseStaticLibraries.end(); ++pathIt )
-		vcProj->addStaticLibrary( "Release", pathIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ) );
+		// setup static libraries
+		QList<Template::StaticLibrary> staticLibraries = master->getStaticLibrariesMatchingConditions( config.getConditions() );
+		for( QList<Template::StaticLibrary>::ConstIterator pathIt = staticLibraries.begin(); pathIt != staticLibraries.end(); ++pathIt )
+			vcProj->addStaticLibrary( config, pathIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ) );
+	}
 
 	// There is nothing to do for Dynamic libraries in VC so just ignore them.
 
@@ -88,10 +77,10 @@ void GeneratorVcBase::generate( Instancer *master )
 		else if( fileIt->getType() == Template::File::RESOURCE )
 			vcProj->addResourceFile( fileIt->getResourceName(), fileIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ), fileIt->getResourceType(), fileIt->getResourceId() );
 		else if( fileIt->getType() == Template::File::BUILD_COPY ) {
-			if( fileIt->conditionsMatch( debugConditions ) )
-				vcProj->addBuildCopy( "Debug", fileIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ) );
-			if( fileIt->conditionsMatch( releaseConditions ) )
-				vcProj->addBuildCopy( "Release", fileIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ) );
+			for( const auto &config : projectConfigurations ) {
+				if( fileIt->conditionsMatch( config.getConditions() ) )
+					vcProj->addBuildCopy( config, fileIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ) );
+			}
 		}
 	}
 

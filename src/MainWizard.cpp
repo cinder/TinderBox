@@ -174,8 +174,14 @@ void MainWizard::generateProject()
 			gen.addGenerator( new GeneratorXcodeIos() );
 		if( mWizardPageMain->isVc2012WinrtSelected() )
 			gen.addGenerator( new GeneratorVc2012Winrt() );
-		if( mWizardPageMain->isVc2013Selected() )
-			gen.addGenerator( new GeneratorVc2013() );
+		if( mWizardPageMain->isVc2013Selected() ) {
+			GeneratorVc2013::Options options;
+			options.enableWin32( mWizardPageEnvOptions->isWin32Selected() );
+			options.enableX64( mWizardPageEnvOptions->isX64Selected() );
+			options.enableDesktopGl( mWizardPageEnvOptions->isDesktopGlSelected() );
+			options.enableAngle( mWizardPageEnvOptions->isAngleSelected() );
+			gen.addGenerator( new GeneratorVc2013( options ) );
+		}
 
 		for( QList<CinderBlock>::ConstIterator blockIt = mCinderBlocks.begin(); blockIt != mCinderBlocks.end(); ++blockIt ) {
 			if( blockIt->getInstallType() != CinderBlock::INSTALL_NONE )

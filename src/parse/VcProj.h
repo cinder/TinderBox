@@ -25,16 +25,16 @@ class VcProj
 	// high-level manipulation functions
 	void		addSourceFile( const QString &fileSystemPath, const QString &virtualPath );
 	void		addHeaderFile( const QString &fileSystemPath, const QString &virtualPath, bool isResourcesHeader = false );
-	void		addStaticLibrary( const QString &config, const QString &path );
+	void		addStaticLibrary( const ProjectConfiguration &config, const QString &path );
 	// There is no action to take for a dynamic library on a VC project
 	//void		addDynamicLibrary( const QString &config, const QString &path, bool shouldCopy );
-	void		addBuildCopy( const QString &config, const QString &path );
-	void		appendPostBuildCommand( const QString &config, const QString &command );
-	void		addHeaderPath( const QString &config, const QString &path );
-	void		addLibraryPath( const QString &config, const QString &path );
+	void		addBuildCopy( const VcProj::ProjectConfiguration &config, const QString &path );
+	void		appendPostBuildCommand( const VcProj::ProjectConfiguration &config, const QString &command );
+	void		addHeaderPath( const VcProj::ProjectConfiguration &config, const QString &path );
+	void		addLibraryPath( const VcProj::ProjectConfiguration &config, const QString &path );
 	void		addResourceFile( const QString &name, const QString &fileSystemPath, const QString &type, int id = -1 );
-	void		addPreprocessorDefine( const QString &config, const QString &value );
-	void		setTargetExtension( const QString &config, const QString &platform, const QString &extension );
+	void		addPreprocessorDefine( const VcProj::ProjectConfiguration &config, const QString &value );
+	void		setTargetExtension( const VcProj::ProjectConfiguration &config, const QString &extension );
 	void        removeProjectConfiguration( const ProjectConfiguration &config );
 
 	QString		getSlnString() const;
@@ -124,6 +124,7 @@ class VcProj
 	pugi::xml_node  findItemDefinitionGroup( const ProjectConfiguration &projConfig );
 	pugi::xml_node	findItemDefinitionGroup( const QString &config, const QString &platform );
 	void			appendToDelimitedList( pugi::xml_node *node, const QString &value, const QString &delimeters );
+	bool			nodeConditionsMatch( const pugi::xml_node &node, const ProjectConfiguration &projConfig );
 	bool			nodeConditionsMatch( const pugi::xml_node &node, const QString &config, const QString &platform );
 	std::string		getConditionString( const QString &config, const QString &platform );
 

@@ -15,8 +15,6 @@
 #include <QPainter>
 #include <fstream>
 
-#include "GeneratorXcodeMac.h"
-#include "GeneratorXcodeIos.h"
 #include "Instancer.h"
 #include "ProjectTemplateManager.h"
 #include "CinderBlockManager.h"

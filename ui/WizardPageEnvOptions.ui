@@ -98,7 +98,7 @@
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="QCheckBox" name="vc2013Win32CheckBox">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -110,8 +110,11 @@
    <property name="text">
     <string>Win32</string>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_2">
+  <widget class="QCheckBox" name="vc2013X64CheckBox">
    <property name="geometry">
     <rect>
      <x>200</x>
@@ -124,7 +127,7 @@
     <string>x64</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_3">
+  <widget class="QCheckBox" name="vc2013AngleCheckBox">
    <property name="geometry">
     <rect>
      <x>200</x>
@@ -137,7 +140,7 @@
     <string>ANGLE</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_4">
+  <widget class="QCheckBox" name="vc2013OpenGlCheckBox">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -148,6 +151,9 @@
    </property>
    <property name="text">
     <string>OpenGL</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_5">

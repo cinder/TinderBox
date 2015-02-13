@@ -116,53 +116,45 @@ void VcProj::addHeaderFile( const QString &fileSystemPath, const QString &virtua
 		mResourcesHeaderPath = fileSystemPath;
 }
 
-void VcProj::addStaticLibrary( const QString &config, const QString &path )
+void VcProj::addStaticLibrary( const ProjectConfiguration &config, const QString &path )
 {
-	for( auto &projConfig : mProjectConfigurations ) {
-pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
-		pugi::xml_node link = defGroup.child( "Link" );
-		pugi::xml_node additionalDependencies = link.child( "AdditionalDependencies" );
-		appendToDelimitedList( &additionalDependencies, path, ";" );
-	}
+	pugi::xml_node defGroup = findItemDefinitionGroup( config );
+	pugi::xml_node link = defGroup.child( "Link" );
+	pugi::xml_node additionalDependencies = link.child( "AdditionalDependencies" );
+	appendToDelimitedList( &additionalDependencies, path, ";" );
 }
 
-void VcProj::addBuildCopy( const QString &config, const QString &path )
+void VcProj::addBuildCopy( const VcProj::ProjectConfiguration &config, const QString &path )
 {
 	appendPostBuildCommand( config, QString("xcopy /y \"") + path + QString("\" \"$(OutDir)\"" ) );
 }
 
-void VcProj::appendPostBuildCommand( const QString &config, const QString &command )
+void VcProj::appendPostBuildCommand( const VcProj::ProjectConfiguration &config, const QString &command )
 {
-	for( auto &projConfig : mProjectConfigurations ) {
-pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
-		pugi::xml_node postBuild = defGroup.child( "PostBuildEvent" );
-		if( postBuild.empty() )
-			postBuild = defGroup.append_child( "PostBuildEvent" );
-		pugi::xml_node commandNode = postBuild.child( "Command" );
-		if( commandNode.empty() )
-			commandNode = postBuild.append_child( "Command" );
-		appendToDelimitedList( &commandNode, command, "\n\r" );
-	}
+	pugi::xml_node defGroup = findItemDefinitionGroup( config );
+	pugi::xml_node postBuild = defGroup.child( "PostBuildEvent" );
+	if( postBuild.empty() )
+		postBuild = defGroup.append_child( "PostBuildEvent" );
+	pugi::xml_node commandNode = postBuild.child( "Command" );
+	if( commandNode.empty() )
+		commandNode = postBuild.append_child( "Command" );
+	appendToDelimitedList( &commandNode, command, "\n\r" );
 }
 
-void VcProj::addHeaderPath( const QString &config, const QString &path )
+void VcProj::addHeaderPath( const VcProj::ProjectConfiguration &config, const QString &path )
 {
-	for( auto &projConfig : mProjectConfigurations ) {
-pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
-		pugi::xml_node clCompile = defGroup.child( "ClCompile" );
-		pugi::xml_node additionalInclude = clCompile.child( "AdditionalIncludeDirectories" );
-		appendToDelimitedList( &additionalInclude, path, ";" );
-	}
+	pugi::xml_node defGroup = findItemDefinitionGroup( config );
+	pugi::xml_node clCompile = defGroup.child( "ClCompile" );
+	pugi::xml_node additionalInclude = clCompile.child( "AdditionalIncludeDirectories" );
+	appendToDelimitedList( &additionalInclude, path, ";" );
 }
 
-void VcProj::addLibraryPath( const QString &config, const QString &path )
+void VcProj::addLibraryPath( const VcProj::ProjectConfiguration &config, const QString &path )
 {
-	for( auto &projConfig : mProjectConfigurations ) {
-pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
-		pugi::xml_node clCompile = defGroup.child( "Link" );
-		pugi::xml_node additionalLib = clCompile.child( "AdditionalLibraryDirectories" );
-		appendToDelimitedList( &additionalLib, path, ";" );
-	}
+	pugi::xml_node defGroup = findItemDefinitionGroup( config );
+	pugi::xml_node clCompile = defGroup.child( "Link" );
+	pugi::xml_node additionalLib = clCompile.child( "AdditionalLibraryDirectories" );
+	appendToDelimitedList( &additionalLib, path, ";" );
 }
 
 void VcProj::addResourceFile( const QString &name, const QString &fileSystemPath, const QString &type, int id )
@@ -194,14 +186,17 @@ void VcProj::addResourceFile( const QString &name, const QString &fileSystemPath
 	}
 }
 
-void VcProj::addPreprocessorDefine( const QString &config, const QString &value )
+void VcProj::addPreprocessorDefine( const VcProj::ProjectConfiguration &config, const QString &value )
 {
-	for( auto &projConfig : mProjectConfigurations ) {
-pugi::xml_node defGroup = findItemDefinitionGroup( projConfig );
-		pugi::xml_node clCompile = defGroup.child( "ClCompile" );
-		pugi::xml_node additionalInclude = clCompile.child( "PreprocessorDefinitions" );
-		appendToDelimitedList( &additionalInclude, value, ";" );
-	}
+	pugi::xml_node defGroup = findItemDefinitionGroup( config );
+	pugi::xml_node clCompile = defGroup.child( "ClCompile" );
+	pugi::xml_node additionalInclude = clCompile.child( "PreprocessorDefinitions" );
+	appendToDelimitedList( &additionalInclude, value, ";" );
+}
+
+bool VcProj::nodeConditionsMatch( const pugi::xml_node &node, const VcProj::ProjectConfiguration &config )
+{
+	return nodeConditionsMatch( node, config.getConfig(), config.getPlatform() );
 }
 
 bool VcProj::nodeConditionsMatch( const pugi::xml_node &node, const QString &config, const QString &platform )
@@ -223,7 +218,7 @@ std::string VcProj::getConditionString( const QString &config, const QString &pl
 	return result.toStdString();
 }
 
-void VcProj::setTargetExtension( const QString &config, const QString &platform, const QString &originalExtension )
+void VcProj::setTargetExtension( const VcProj::ProjectConfiguration &config, const QString &originalExtension )
 {
 	QString extension = originalExtension;
 	if( extension.isEmpty() )
@@ -234,7 +229,7 @@ void VcProj::setTargetExtension( const QString &config, const QString &platform,
 	// see if the TargetExt node already exists with the right config
 	pugi::xpath_node_set targetExtGroups = mProjDom->select_nodes("/Project/PropertyGroup/TargetExt");
 	for( pugi::xpath_node_set::const_iterator it = targetExtGroups.begin(); it != targetExtGroups.end(); ++it ) {
-		if( nodeConditionsMatch( it->node(), config, platform ) ) {
+		if( nodeConditionsMatch( it->node(), config ) ) {
 			it->node().first_child().set_value( extension.toUtf8().constData() );
 			return;
 		}
@@ -246,7 +241,7 @@ void VcProj::setTargetExtension( const QString &config, const QString &platform,
 		pugi::xml_node newNode = propertyGroup.node().append_child( "TargetExt" );
 		newNode.append_child(pugi::node_pcdata).set_value( extension.toUtf8().constData() );
 		pugi::xml_attribute attrNode = newNode.append_attribute( "Condition" );
-		attrNode.set_value( getConditionString( config, platform ).c_str() );
+		attrNode.set_value( config.asString().toStdString().c_str() );
 	}
 }
 
