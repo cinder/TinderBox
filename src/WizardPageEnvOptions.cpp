@@ -11,6 +11,15 @@ WizardPageEnvOptions::WizardPageEnvOptions(QWidget *parent) :
 	connect( ui->vc2013X64CheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
 	connect( ui->vc2013OpenGlCheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
 	connect( ui->vc2013AngleCheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
+
+	QFont font = ui->envOptionsLabel->font();
+	font.setBold( true ); font.setPointSize( 12 );
+	ui->envOptionsLabel->setFont( font );
+	font.setPointSize( 10 );
+	ui->vc2013HeaderLabel->setFont( font );
+	font.setPointSize( 9 );
+	ui->vc2013PlatformLabel->setFont( font );
+	ui->vc2013RendererLabel->setFont( font );
 }
 
 bool WizardPageEnvOptions::isWin32Selected() const

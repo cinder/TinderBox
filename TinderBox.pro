@@ -18,6 +18,7 @@ macx {
 }
 
 win32 {
+    CONFIG += C++11
     RC_FILE = Resources_Win.rc
 }
 
