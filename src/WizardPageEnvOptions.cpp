@@ -22,6 +22,10 @@ WizardPageEnvOptions::WizardPageEnvOptions(QWidget *parent) :
 	ui->vc2013PlatformLabel->setFont( font );
 	ui->vc2013RendererLabel->setFont( font );
 #endif
+
+//	ui->vc2013PlatformLabel->setDisabled( true );
+//	ui->vc2013Win32CheckBox->setDisabled( true );
+//	ui->vc2013X64CheckBox->setDisabled( true );
 }
 
 bool WizardPageEnvOptions::isWin32Selected() const

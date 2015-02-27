@@ -258,7 +258,7 @@ background-color: red;
        <item row="5" column="1">
         <widget class="QWidget" name="widget" native="true">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -272,12 +272,18 @@ background-color: red;
          <property name="maximumSize">
           <size>
            <width>400</width>
-           <height>110</height>
+           <height>130</height>
           </size>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QListWidget" name="compilerList">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="lineWidth">
              <number>2</number>
             </property>
@@ -308,11 +314,20 @@ background-color: red;
             <property name="resizeMode">
              <enum>QListView::Adjust</enum>
             </property>
+            <property name="layoutMode">
+             <enum>QListView::SinglePass</enum>
+            </property>
             <property name="spacing">
-             <number>3</number>
+             <number>6</number>
             </property>
             <property name="viewMode">
              <enum>QListView::IconMode</enum>
+            </property>
+            <property name="uniformItemSizes">
+             <bool>false</bool>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
             </property>
             <property name="selectionRectVisible">
              <bool>false</bool>
@@ -340,7 +355,8 @@ background-color: red;
             </item>
             <item>
              <property name="text">
-              <string>WinRT</string>
+              <string>WinRT
+(VC 2013)</string>
              </property>
              <property name="icon">
               <iconset>
