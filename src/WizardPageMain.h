@@ -31,7 +31,7 @@ public:
 	void	enablePlatform( size_t platform, bool enable );
 	bool	isXcodeSelected() const;
 	bool	isXcodeIosSelected() const;
-	bool	isVc2012WinrtSelected() const;
+	bool	isVc2013WinrtSelected() const;
 	bool	isVc2013Selected() const;
 
 	void                updateCinderVersionsCtrl();

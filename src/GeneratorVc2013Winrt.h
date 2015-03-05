@@ -6,9 +6,9 @@
 #include "ProjectTemplate.h"
 #include "GeneratorVcBase.h"
 
-class GeneratorVc2012Winrt : public GeneratorVcBase {
+class GeneratorVc2013Winrt : public GeneratorVcBase {
   public:
-	GeneratorVc2012Winrt()
+	GeneratorVc2013Winrt()
 		: GeneratorVcBase( "vc2013_winrt" )
 	{}
 
