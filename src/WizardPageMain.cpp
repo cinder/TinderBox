@@ -25,7 +25,7 @@
 #include <iostream>
 
 // add to mPlatformConditions too
-enum { XCODE_INDEX, XCODE_IOS_INDEX, VC2013_WINRT_INDEX, VC2013_INDEX, NUM_PLATFORMS };
+enum { XCODE_INDEX, XCODE_IOS_INDEX, VC2013_INDEX, VC2013_WINRT_INDEX, NUM_PLATFORMS };
 
 WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	QWizardPage(parent),

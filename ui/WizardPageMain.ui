@@ -364,6 +364,17 @@ background-color: red;
             </item>
             <item>
              <property name="text">
+              <string>VC 2013</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normalon>:/icons/vc2013.png</normalon>
+               <selectedon>:/icons/vc2013_selected.png</selectedon>
+              </iconset>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>WinRT
 (VC 2013)</string>
              </property>
@@ -371,17 +382,6 @@ background-color: red;
               <iconset>
                <normalon>:/icons/vc2013_winrt.png</normalon>
                <selectedoff>:/icons/vc2013_winrt_selected.png</selectedoff>
-              </iconset>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>VC 2013</string>
-             </property>
-             <property name="icon">
-              <iconset>
-               <normalon>:/icons/vc2013.png</normalon>
-               <selectedon>:/icons/vc2013_selected.png</selectedon>
               </iconset>
              </property>
             </item>
