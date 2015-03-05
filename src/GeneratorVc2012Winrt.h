@@ -9,7 +9,7 @@
 class GeneratorVc2012Winrt : public GeneratorVcBase {
   public:
 	GeneratorVc2012Winrt()
-		: GeneratorVcBase( "vc2012_winrt" )
+		: GeneratorVcBase( "vc2013_winrt" )
 	{}
 
     virtual QMap<QString,QString>                       getConditions() const;
