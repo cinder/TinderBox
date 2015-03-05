@@ -27,7 +27,7 @@ SOURCES += \
     src/CinderBlockManager.cpp \
     src/ErrorList.cpp \
     src/FirstTimeDlg.cpp \
-    src/GeneratorVc2012Winrt.cpp \
+    src/GeneratorVc2013Winrt.cpp \
     src/GeneratorVc2013.cpp \
     src/GeneratorVcBase.cpp \
     src/GeneratorXcodeBase.cpp \
@@ -44,7 +44,7 @@ SOURCES += \
     src/WizardPageCinderBlocks.cpp \
     src/WizardPageMain.cpp \
     src/parse/PList.cpp \
-    src/parse/Vc2012WinrtProj.cpp \
+    src/parse/Vc2013WinrtProj.cpp \
     src/parse/Vc2013Proj.cpp \
     src/parse/VcProj.cpp \
     src/parse/XCodeProj.cpp \
@@ -57,7 +57,7 @@ HEADERS  += \
     src/ErrorList.h \
     src/FirstTimeDlg.h \
     src/GeneratorBase.h \
-    src/GeneratorVc2012Winrt.h \
+    src/GeneratorVc2013Winrt.h \
     src/GeneratorVc2013.h \
     src/GeneratorVcBase.h \
     src/GeneratorXcodeBase.h \
@@ -74,7 +74,7 @@ HEADERS  += \
     src/WizardPageCinderBlocks.h \
     src/WizardPageMain.h \
     src/parse/PList.h \
-    src/parse/Vc2012WinrtProj.h \
+    src/parse/Vc2013WinrtProj.h \
     src/parse/Vc2013Proj.h \
     src/parse/VcProj.h \
     src/parse/XCodeProj.h \
