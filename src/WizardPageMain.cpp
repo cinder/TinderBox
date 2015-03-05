@@ -42,8 +42,8 @@ WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	mPlatformConditions.push_back( xcodePlatCond );
 	QMap<QString,QString> xcodeIosPlatCond; xcodeIosPlatCond["os"] = "ios";
 	mPlatformConditions.push_back( xcodeIosPlatCond );
-	QMap<QString,QString> vc2012WinrtPlatCond; vc2012WinrtPlatCond["os"] = "winrt"; vc2012WinrtPlatCond["compiler"] = "vc2012";
-	mPlatformConditions.push_back( vc2012WinrtPlatCond );
+	QMap<QString,QString> vc2013WinrtPlatCond; vc2013WinrtPlatCond["os"] = "winrt"; vc2013WinrtPlatCond["compiler"] = "vc2013";
+	mPlatformConditions.push_back( vc2013WinrtPlatCond );
 	QMap<QString,QString> vc2013PlatCond; vc2013PlatCond["os"] = "msw"; vc2013PlatCond["compiler"] = "vc2013";
 	mPlatformConditions.push_back( vc2013PlatCond );
 
