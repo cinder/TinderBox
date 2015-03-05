@@ -33,6 +33,8 @@ MainWizard::MainWizard(QWidget *parent) :
 {
 	checkForFirstTime();
 	loadPreferences();
+	setCinderPathToHousingPath();
+
 	loadTemplates();
 
 	setWizardStyle( QWizard::ClassicStyle );
@@ -55,6 +57,8 @@ MainWizard::MainWizard(QWidget *parent) :
 	connect( this, SIGNAL(customButtonClicked(int)), this, SLOT(preferencesClicked()) );
 	connect( this, SIGNAL(currentIdChanged(int)), this, SLOT(advancingToNextPage(int)) );
 	connect( this, SIGNAL(accepted()), this, SLOT(generateProject()) );
+
+	setCinderLocationByIndex( mCinderLocationIndex );
 
 	mPrefs = new Prefs( this );
 }
@@ -85,8 +89,6 @@ void MainWizard::loadPreferences()
 		mDefaultLocation = QDir::toNativeSeparators( joinPath( QDir::homePath(), "Documents" ) );
 #endif
 	}
-
-	setCinderLocation( Preferences::getDefaultCinderVersion().path, false );
 }
 
 void MainWizard::loadTemplates()
@@ -119,24 +121,51 @@ int MainWizard::nextId() const
 		return PAGE_CINDER_BLOCKS;
 }
 
-void MainWizard::checkForFirstTime()
+// Returns the path to the version of Cinder which the application is being run from
+QString MainWizard::getHousingCinderPath()
 {
-	// if there are no Cinder versions, try to add the one we're in
-	if( Preferences::getCinderVersions().isEmpty() ) {
-		for( int i = 1; i < 8; ++i ) {
-			QString test = QCoreApplication::applicationDirPath();
-			for( int up = 0; up < i; ++up )
-				test += "/..";
-			if( QDir( test + "/blocks/__AppTemplates" ).exists() ) {
-				Preferences::addCinderVersion( "HEAD", QDir( test ).absolutePath() );
-				Preferences::setOutputPath( QDir::homePath() );
-				break;
-			}
+	for( int i = 1; i < 8; ++i ) {
+		QString test = QCoreApplication::applicationDirPath();
+		for( int up = 0; up < i; ++up )
+			test += "/..";
+		if( QFileInfo( test + "/blocks/__AppTemplates" ).isDir() ) {
+			return QFileInfo( test ).absoluteFilePath();
 		}
 	}
-	
-	// Now check to see if we need to run the 'first time' dialog.
-	if( Preferences::getCinderVersions().isEmpty() ){
+
+	return QString();
+}
+
+void MainWizard::setCinderPathToHousingPath()
+{
+	QString housingPath = getHousingCinderPath();
+
+	if( housingPath.length() > 0 ) {
+		// make sure this is already a known Cinder path
+		int index = Preferences::addCinderVersion( QDir( housingPath ).dirName(), QDir( housingPath ).absolutePath(), false );
+		mCinderLocationIndex = index;
+	}
+	else
+		mCinderLocationIndex = 0;
+}
+
+const QString& MainWizard::getCinderLocation() const
+{
+	return Preferences::getCinderVersions()[mCinderLocationIndex].path;
+}
+
+// Returns 'true' if this was the first time the user has run TinderBox
+bool MainWizard::checkForFirstTime()
+{
+	// if there are no Cinder versions, try to add the one we're in and we won't bug the user.
+	if( Preferences::getCinderVersions().isEmpty() ) {
+		QString housingPath = getHousingCinderPath();
+		if( housingPath.length() > 0 ) {
+			Preferences::addCinderVersion( QDir( housingPath ).dirName(), QDir( housingPath ).absolutePath(), false );
+			Preferences::setOutputPath( QDir::homePath() );
+			return true;
+		}
+
 		FirstTimeDlg firstTimeDlg( this );
 		firstTimeDlg.exec();
 
@@ -144,17 +173,18 @@ void MainWizard::checkForFirstTime()
 		dirSelDlg.setFileMode( QFileDialog::Directory );
 		dirSelDlg.setOptions( QFileDialog::ShowDirsOnly | QFileDialog::ReadOnly );
 		if( dirSelDlg.exec() ) {
-			Preferences::addCinderVersion( "HEAD", dirSelDlg.selectedFiles()[0] );
+			QDir cinderPath( dirSelDlg.selectedFiles()[0] );
+			Preferences::addCinderVersion( cinderPath.dirName(), cinderPath.absolutePath(), true );
 			Preferences::setOutputPath( QDir::homePath() );
 		}
 		else {
-			// User hit cancel - bail!
-
-			// There is a probably a better way to do this. But for now
-			// we'll call the system level exit.
 			exit( 0 );
 		}
+
+		return true;
 	}
+
+	return false;
 }
 
 void MainWizard::generateProject()
@@ -207,26 +237,26 @@ void MainWizard::generateProject()
 	}
 }
 
-void MainWizard::setCinderLocation( const QString &path, bool updateGui )
+void MainWizard::setCinderLocationByIndex( int index )
 {
-	mCinderLocation = path;
+	mCinderLocationIndex = index;
+
+	auto cinderLocationPath = Preferences::getCinderVersions()[index].path;
 
 	ProjectTemplateManager::clear();
 	mTemplateErrors.clear();
-	ProjectTemplateManager::setCinderDir( mCinderLocation, &mTemplateErrors );
+	ProjectTemplateManager::setCinderDir( cinderLocationPath, &mTemplateErrors );
 
 	CinderBlockManager::clear();
 	mCinderBlockErrors.clear();
-	CinderBlockManager::scan( mCinderLocation, &mCinderBlockErrors );
+	CinderBlockManager::scan( cinderLocationPath, &mCinderBlockErrors );
 
 	mCinderBlocks = CinderBlockManager::getCinderBlocks();
 
-	if( updateGui ) {
-		if( mWizardPageMain )
-			mWizardPageMain->updateTemplates();
-		if( mWizardPageCinderBlocks )
-			mWizardPageCinderBlocks->setCinderLocation( path );
-	}
+	if( mWizardPageMain )
+		mWizardPageMain->setCinderLocationByIndex( index );
+	if( mWizardPageCinderBlocks )
+		mWizardPageCinderBlocks->setCinderLocation( cinderLocationPath );
 }
 
 CinderBlock* MainWizard::findCinderBlockById( const QString &searchId )

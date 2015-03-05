@@ -234,8 +234,17 @@ background-color: red;
        </item>
        <item row="4" column="1">
         <widget class="QLabel" name="cinderVersionPathLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Cinder Version Path</string>
+         </property>
+         <property name="wordWrap">
+          <bool>false</bool>
          </property>
         </widget>
        </item>

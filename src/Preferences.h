@@ -11,14 +11,15 @@ namespace Ui {
 
 class Preferences {
   public:
-	static void addCinderVersion( const QString &name, const QString &path ) { get()->addCinderVersionInst( name, path ); }
+	static int	addCinderVersion( const QString &name, const QString &path, bool shouldSave ) { return get()->addCinderVersionInst( name, path, shouldSave ); }
 	static void removeCinderVersion( size_t index ) { get()->removeCinderVersionInst( index ); }
 	static void updateCinderVersion( size_t index, const QString &name, const QString &path ) { get()->updateCinderVersionInst( index, name, path ); }
 
 	struct CinderVersion {
 		QString name;
 		QString path;
-		bool	valid;
+		bool	valid; // appears to be an actual Cinder repo
+		bool	shouldSave; // if we added the housing Cinder repo without user request, don't serialize
 	};
 	static QList<CinderVersion>&		getCinderVersions() { return get()->mCinderVersions; }
 	static const CinderVersion&			getDefaultCinderVersion() { return *(get()->mCinderVersions.begin()); }
@@ -38,7 +39,7 @@ class Preferences {
 
 	void		load();
 	void		save();
-	void		addCinderVersionInst( const QString &name, const QString &path );
+	int			addCinderVersionInst( const QString &name, const QString &path, bool shouldSave );
 	void		removeCinderVersionInst( size_t index );
 	void		updateCinderVersionInst( size_t index, const QString &name, const QString &path );
 

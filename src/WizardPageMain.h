@@ -25,6 +25,7 @@ public:
 	QString					getProjectName() const;
 	QString					getLocation() const;
 	QString					getCinderLocation() const;
+	void					setCinderLocationByIndex( int index );
 	bool					shouldCreateGitRepo() const;
 
 	void	enablePlatform( size_t platform, bool enable );

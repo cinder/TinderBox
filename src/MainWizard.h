@@ -15,8 +15,10 @@ public:
 void paintEvent( QPaintEvent *event );
 	virtual QSize	sizeHint() const { return QSize( 700, 500 ); }
 
-	const QString&	getCinderLocation() const { return mCinderLocation; }
-	void			setCinderLocation( const QString &path, bool updateGui = true );
+	QString			getHousingCinderPath();
+	void			setCinderPathToHousingPath();
+	const QString&	getCinderLocation() const;
+	void			setCinderLocationByIndex( int index );
 	QList<CinderBlock>&		getCinderBlocks() { return mCinderBlocks; }
 	CinderBlock*			findCinderBlockById( const QString &id );
 	void					refreshRequiredBlocks();
@@ -36,7 +38,7 @@ public slots:
 
 private:
     int             nextId() const override;
-	void			checkForFirstTime();
+	bool			checkForFirstTime();
 	void			loadPreferences();
 	void			loadTemplates();
 	void			requireBlocks( const QList<QString> &dependencyNames );
@@ -45,7 +47,7 @@ private:
 	class WizardPageCinderBlocks	*mWizardPageCinderBlocks;
     class WizardPageEnvOptions      *mWizardPageEnvOptions;
 	Prefs					*mPrefs;
-	QString					mCinderLocation;
+	int						mCinderLocationIndex;
 	ErrorList				mTemplateErrors, mCinderBlockErrors;
 	QString					mDefaultLocation;
 	bool					mShouldCreateGitRepo;

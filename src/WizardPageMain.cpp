@@ -76,6 +76,13 @@ void WizardPageMain::initializePage()
 	updateProjectNameStatus();
 }
 
+void WizardPageMain::setCinderLocationByIndex( int index )
+{
+	ui->cinderVersionComboBox->setCurrentIndex( index );
+	ui->cinderVersionPathLabel->setText( QDir::toNativeSeparators( mParent->getCinderLocation() ) );
+	updateTemplates();
+}
+
 void WizardPageMain::updateTemplates()
 {
 	// save the currently selected template's ID
@@ -135,8 +142,6 @@ void WizardPageMain::updateTemplates()
 		ui->showErrorsButton->hide();
 	else
 		ui->showErrorsButton->show();
-
-	ui->cinderVersionPathLabel->setText( QDir::toNativeSeparators( mParent->getCinderLocation() ) );
 }
 
 QString WizardPageMain::getTemplateValue() const
@@ -260,7 +265,7 @@ void WizardPageMain::on_cinderVersionComboBox_activated( QString /*value*/ )
 	
 	Preferences::CinderVersion cv = Preferences::getCinderVersions()[ui->cinderVersionComboBox->currentIndex()];
 	ui->cinderVersionPathLabel->setText( QDir::toNativeSeparators( cv.path ) );
-	mParent->setCinderLocation( QDir::toNativeSeparators( cv.path ) );
+	mParent->setCinderLocationByIndex( ui->cinderVersionComboBox->currentIndex() );
 
 	if( ! Preferences::getCinderVersions()[ui->cinderVersionComboBox->currentIndex()].valid )
 		ui->cinderVersionComboBox->setStyleSheet("QComboBox { background-color: red; }");

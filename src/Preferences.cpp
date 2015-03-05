@@ -5,6 +5,8 @@
 #include <QSettings>
 
 // Saves to ~/Library/Preferences/org.libcinder.TinderBox.plist on Mac OS X
+// On modern OS X you need to precede with:
+// killall -u andrewfb cfprefsd
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Preferences
@@ -31,6 +33,7 @@ void Preferences::load()
 		cv.name = settings.value( "cinderVersionName" ).toString();
 		cv.path = settings.value( "cinderVersionPath" ).toString();
 		cv.valid = QDir( cv.path + "/blocks/__appTemplates" ).exists();
+		cv.shouldSave = true;
 		mCinderVersions.push_back( cv );
 	}
 	settings.endArray();
@@ -45,10 +48,12 @@ void Preferences::save()
 	int i = 0;
 	QList<CinderVersion>::const_iterator cit = mCinderVersions.begin();
 	settings.beginWriteArray( "cinderVersions" );
-	for( ; cit != mCinderVersions.end(); ++cit, ++i ) {
-		settings.setArrayIndex( i );
-		settings.setValue( "cinderVersionName", cit->name );
-		settings.setValue( "cinderVersionPath", cit->path );
+	for( ; cit != mCinderVersions.end(); ++cit ) {
+		if( cit->shouldSave ) {
+			settings.setArrayIndex( i++ );
+			settings.setValue( "cinderVersionName", cit->name );
+			settings.setValue( "cinderVersionPath", cit->path );
+		}
 	}
 	settings.endArray();
 	settings.setValue( "outputPath", mOutputPath );
@@ -56,14 +61,24 @@ void Preferences::save()
 	settings.sync();
 }
 
-void Preferences::addCinderVersionInst( const QString &name, const QString &path )
+// returns the index if it already exists
+int Preferences::addCinderVersionInst( const QString &name, const QString &path, bool shouldSave )
 {
+	// see if we already have this version
+	for( size_t idx = 0; idx < mCinderVersions.size(); ++idx ) {
+		if( QFileInfo( path ).absoluteFilePath() == QFileInfo( mCinderVersions[idx].path ).absoluteFilePath() )
+			return idx;
+	}
+
 	CinderVersion v;
 	v.name = name;
 	v.path = path;
+	v.valid = QDir( v.path + "/blocks/__appTemplates" ).exists();
+	v.shouldSave = shouldSave;
 	mCinderVersions.push_back( v );
 
 	save();
+	return mCinderVersions.size() - 1;
 }
 
 void Preferences::removeCinderVersionInst( size_t index )
@@ -123,7 +138,7 @@ void Prefs::on_addButton_clicked()
 		// We should always have one item, if we don't. Something has gone horribly wrong.
 		QStringList items = dirSelDlg.selectedFiles();
 		QDir dir( items[0] );
-		Preferences::addCinderVersion( dir.dirName(), items[0] );
+		Preferences::addCinderVersion( dir.dirName(), items[0], true );
 
 		updateCinderVersionsCtrl();
 	}
