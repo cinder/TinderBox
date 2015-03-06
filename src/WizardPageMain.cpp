@@ -37,15 +37,15 @@ WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	ui->projectNameLineEdit->setText( "CinderProject" );
 	mLocationPaletteOrig = ui->locationLineEdit->palette();
 
-	// setup platform conditions
+    // setup platform conditions; MUST MATCH enum above
 	QMap<QString,QString> xcodePlatCond; xcodePlatCond["os"] = "macosx";
 	mPlatformConditions.push_back( xcodePlatCond );
 	QMap<QString,QString> xcodeIosPlatCond; xcodeIosPlatCond["os"] = "ios";
 	mPlatformConditions.push_back( xcodeIosPlatCond );
-	QMap<QString,QString> vc2013WinrtPlatCond; vc2013WinrtPlatCond["os"] = "winrt"; vc2013WinrtPlatCond["compiler"] = "vc2013";
-	mPlatformConditions.push_back( vc2013WinrtPlatCond );
 	QMap<QString,QString> vc2013PlatCond; vc2013PlatCond["os"] = "msw"; vc2013PlatCond["compiler"] = "vc2013";
 	mPlatformConditions.push_back( vc2013PlatCond );
+    QMap<QString,QString> vc2013WinrtPlatCond; vc2013WinrtPlatCond["os"] = "winrt"; vc2013WinrtPlatCond["compiler"] = "vc2013";
+    mPlatformConditions.push_back( vc2013WinrtPlatCond );
 
 	updateTemplates();
 
