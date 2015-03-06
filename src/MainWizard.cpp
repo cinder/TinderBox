@@ -226,9 +226,11 @@ void MainWizard::generateProject()
 
 		gen.generate( mWizardPageMain->shouldCreateGitRepo() );
 
+		// open the Finder / Explorer at the path we just created
 		QString localPath = joinPath( gen.getBaseLocation(), gen.getProjectName() );
 #if defined Q_OS_MACX
-		localPath = joinPath( localPath, "xcode" );
+		if( QFileInfo( localPath + "/xcode" ).exists() )
+			localPath = joinPath( localPath, "xcode" );
 #endif
 		QUrl localUrl = QUrl::fromLocalFile( QDir::toNativeSeparators( localPath ) );
 		QDesktopServices::openUrl( localUrl );
