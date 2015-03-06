@@ -204,8 +204,6 @@ void MainWizard::generateProject()
 			gen.addGenerator( new GeneratorXcodeMac() );
 		if( mWizardPageMain->isXcodeIosSelected() )
 			gen.addGenerator( new GeneratorXcodeIos() );
-		if( mWizardPageMain->isVc2013WinrtSelected() )
-			gen.addGenerator( new GeneratorVc2013Winrt() );
 		if( mWizardPageMain->isVc2013Selected() ) {
 			GeneratorVc2013::Options options;
 			options.enableWin32( mWizardPageEnvOptions->isVc2013Win32Selected() );
@@ -214,7 +212,13 @@ void MainWizard::generateProject()
 			options.enableAngle( mWizardPageEnvOptions->isVc2013AngleSelected() );
 			gen.addGenerator( new GeneratorVc2013( options ) );
 		}
-
+		if( mWizardPageMain->isVc2013WinrtSelected() ) {
+			GeneratorVc2013WinRt::Options options;
+			options.enableWin32( mWizardPageEnvOptions->isVc2013WinRtWin32Selected() );
+			options.enableX64( mWizardPageEnvOptions->isVc2013WinRtX64Selected() );
+			options.enableArm( mWizardPageEnvOptions->isVc2013WinRtArmSelected() );
+			gen.addGenerator( new GeneratorVc2013WinRt( options ) );
+		}
 		for( QList<CinderBlock>::ConstIterator blockIt = mCinderBlocks.begin(); blockIt != mCinderBlocks.end(); ++blockIt ) {
 			if( blockIt->getInstallType() != CinderBlock::INSTALL_NONE )
 				gen.addCinderBlock( *blockIt );
