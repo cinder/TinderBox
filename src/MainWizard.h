@@ -7,6 +7,10 @@
 #include "ProjectTemplate.h"
 #include "ErrorList.h"
 
+class WizardPageMain;
+class WizardPageEnvOptions;
+class WizardPageCinderBlocks;
+
 class MainWizard : public QWizard
 {
 	Q_OBJECT
@@ -29,6 +33,8 @@ void paintEvent( QPaintEvent *event );
 	const ErrorList&	getTemplateErrorList() const { return mTemplateErrors; }
 	ErrorList&			getTemplateErrorList() { return mTemplateErrors; }
 	const ErrorList&	getCinderBlockErrorList() const { return mCinderBlockErrors; }	
+
+	const WizardPageMain*	getWizardPageMain() const { return mWizardPageMain; }
 signals:
 	
 public slots:
@@ -43,9 +49,9 @@ private:
 	void			loadTemplates();
 	void			requireBlocks( const QList<QString> &dependencyNames );
 
-	class WizardPageMain			*mWizardPageMain;
-	class WizardPageCinderBlocks	*mWizardPageCinderBlocks;
-    class WizardPageEnvOptions      *mWizardPageEnvOptions;
+	WizardPageMain			*mWizardPageMain;
+	WizardPageCinderBlocks	*mWizardPageCinderBlocks;
+	WizardPageEnvOptions    *mWizardPageEnvOptions;
 	Prefs					*mPrefs;
 	int						mCinderLocationIndex;
 	ErrorList				mTemplateErrors, mCinderBlockErrors;

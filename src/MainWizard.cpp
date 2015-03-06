@@ -110,7 +110,7 @@ int MainWizard::nextId() const
 {
     // If we're coming from the first page and the user has enabled VC2013, we need to present some options
 	if( currentId() == PAGE_MAIN ) {
-        if( mWizardPageMain->isVc2013Selected() )
+		if( mWizardPageMain->isVc2013Selected() || mWizardPageMain->isVc2013WinrtSelected() )
 			return PAGE_ENV_OPTIONS;
         else
 			return PAGE_CINDER_BLOCKS;
@@ -208,10 +208,10 @@ void MainWizard::generateProject()
 			gen.addGenerator( new GeneratorVc2013Winrt() );
 		if( mWizardPageMain->isVc2013Selected() ) {
 			GeneratorVc2013::Options options;
-			options.enableWin32( mWizardPageEnvOptions->isWin32Selected() );
-			options.enableX64( mWizardPageEnvOptions->isX64Selected() );
-			options.enableDesktopGl( mWizardPageEnvOptions->isDesktopGlSelected() );
-			options.enableAngle( mWizardPageEnvOptions->isAngleSelected() );
+			options.enableWin32( mWizardPageEnvOptions->isVc2013Win32Selected() );
+			options.enableX64( mWizardPageEnvOptions->isVc2013X64Selected() );
+			options.enableDesktopGl( mWizardPageEnvOptions->isVc2013DesktopGlSelected() );
+			options.enableAngle( mWizardPageEnvOptions->isVc2013AngleSelected() );
 			gen.addGenerator( new GeneratorVc2013( options ) );
 		}
 
