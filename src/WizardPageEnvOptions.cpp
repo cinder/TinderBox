@@ -25,9 +25,11 @@ WizardPageEnvOptions::WizardPageEnvOptions( MainWizard *parent ) :
 	ui->envOptionsLabel->setFont( font );
 	font.setPointSize( 10 );
 	ui->vc2013HeaderLabel->setFont( font );
+	ui->vc2013WinRtHeaderLabel->setFont( font );
 	font.setPointSize( 9 );
 	ui->vc2013PlatformLabel->setFont( font );
 	ui->vc2013RendererLabel->setFont( font );
+	ui->vc2013WinRtPlatformLabel->setFont( font );
 #endif
 }
 
