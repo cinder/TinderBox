@@ -506,7 +506,10 @@ void Instancer::setCinderAbsolutePath( const QString &cinderLocation )
 QString Instancer::getRelCinderPath( const QString &relativeTo ) const
 {
 	QDir dir( relativeTo );
-	return dir.relativeFilePath( mAbsCinderPath );
+	auto result = dir.relativeFilePath( mAbsCinderPath );
+	if( result.endsWith('/') )
+		result.chop( 1 );
+	return result;
 }
 
 QString Instancer::createDirectory( QString relPath ) const
