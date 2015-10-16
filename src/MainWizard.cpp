@@ -9,7 +9,7 @@
 #include "CinderBlockManager.h"
 #include "GeneratorXcodeMac.h"
 #include "GeneratorXcodeIos.h"
-#include "GeneratorVc2013Winrt.h"
+#include "GeneratorVc2015Winrt.h"
 #include "GeneratorVc2013.h"
 #include "Util.h"
 
@@ -213,11 +213,11 @@ void MainWizard::generateProject()
 			gen.addGenerator( new GeneratorVc2013( options ) );
 		}
 		if( mWizardPageMain->isVc2013WinrtSelected() ) {
-			GeneratorVc2013WinRt::Options options;
+            GeneratorVc2015WinRt::Options options;
 			options.enableWin32( mWizardPageEnvOptions->isVc2013WinRtWin32Selected() );
 			options.enableX64( mWizardPageEnvOptions->isVc2013WinRtX64Selected() );
 			options.enableArm( mWizardPageEnvOptions->isVc2013WinRtArmSelected() );
-			gen.addGenerator( new GeneratorVc2013WinRt( options ) );
+            gen.addGenerator( new GeneratorVc2015WinRt( options ) );
 		}
 		for( QList<CinderBlock>::ConstIterator blockIt = mCinderBlocks.begin(); blockIt != mCinderBlocks.end(); ++blockIt ) {
 			if( blockIt->getInstallType() != CinderBlock::INSTALL_NONE )

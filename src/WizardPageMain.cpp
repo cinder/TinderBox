@@ -25,7 +25,7 @@
 #include <iostream>
 
 // add to mPlatformConditions too
-enum { XCODE_INDEX, XCODE_IOS_INDEX, VC2013_INDEX, VC2013_WINRT_INDEX, NUM_PLATFORMS };
+enum { XCODE_INDEX, XCODE_IOS_INDEX, VC2013_INDEX, VC2015_WINRT_INDEX, NUM_PLATFORMS };
 
 WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	QWizardPage(parent),
@@ -179,7 +179,7 @@ bool WizardPageMain::isXcodeIosSelected() const
 
 bool WizardPageMain::isVc2013WinrtSelected() const
 {
-	return ui->compilerList->item( VC2013_WINRT_INDEX )->isSelected();
+    return ui->compilerList->item( VC2015_WINRT_INDEX )->isSelected();
 }
 
 bool WizardPageMain::isVc2013Selected() const

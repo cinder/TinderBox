@@ -6,12 +6,12 @@
 #include "ProjectTemplate.h"
 #include "GeneratorVcBase.h"
 
-class GeneratorVc2013WinRt : public GeneratorVcBase {
+class GeneratorVc2015WinRt : public GeneratorVcBase {
   public:
 	struct Options;
 
-	GeneratorVc2013WinRt( const Options & options )
-		: GeneratorVcBase( "vc2013_winrt" ), mOptions( options )
+    GeneratorVc2015WinRt( const Options & options )
+        : GeneratorVcBase( "vc2015_winrt" ), mOptions( options )
 	{}
 
 	struct Options {

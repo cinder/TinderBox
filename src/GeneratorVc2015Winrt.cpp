@@ -1,29 +1,29 @@
-#include "GeneratorVc2013Winrt.h"
+#include "GeneratorVc2015Winrt.h"
 #include "ProjectTemplateManager.h"
 #include "Util.h"
-#include "Vc2013WinrtProj.h"
+#include "Vc2015WinrtProj.h"
 
 #include <fstream>
 
-QMap<QString,QString> GeneratorVc2013WinRt::getConditions() const
+QMap<QString,QString> GeneratorVc2015WinRt::getConditions() const
 {
 	QMap<QString,QString> conditions;
-	conditions["compiler"] = "vc2013";
+    conditions["compiler"] = "vc2015";
 	conditions["os"] = "winrt";
 	return conditions;
 }
 
-QString GeneratorVc2013WinRt::getCompiler() const
+QString GeneratorVc2015WinRt::getCompiler() const
 {
-	return QString( "120" );
+    return QString( "140" );
 }
 
-VcProjRef GeneratorVc2013WinRt::createVcProj( const QString &VcProj, const QString &VcProjFilters )
+VcProjRef GeneratorVc2015WinRt::createVcProj( const QString &VcProj, const QString &VcProjFilters )
 {
-	return Vc2013WinrtProj::createFromString( VcProj, VcProjFilters );
+    return Vc2015WinrtProj::createFromString( VcProj, VcProjFilters );
 }
 
-std::vector<VcProj::ProjectConfiguration> GeneratorVc2013WinRt::getPlatformConfigurations() const
+std::vector<VcProj::ProjectConfiguration> GeneratorVc2015WinRt::getPlatformConfigurations() const
 {
     std::vector<VcProj::ProjectConfiguration> result;
 
@@ -60,7 +60,7 @@ std::vector<VcProj::ProjectConfiguration> GeneratorVc2013WinRt::getPlatformConfi
 	return result;
 }
 
-bool GeneratorVc2013WinRt::getSlnDeploy() const
+bool GeneratorVc2015WinRt::getSlnDeploy() const
 {
 	return true;
 }

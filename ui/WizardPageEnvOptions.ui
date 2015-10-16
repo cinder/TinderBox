@@ -390,7 +390,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="../TinderBox.qrc">:/icons/vc2013_winrt.png</pixmap>
+          <pixmap resource="../TinderBox.qrc">:/icons/vc_winrt.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -420,7 +420,7 @@
           </font>
          </property>
          <property name="text">
-          <string>WinRT (Visual C++ 2013)</string>
+          <string>WinRT (Visual C++ 2015)</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
