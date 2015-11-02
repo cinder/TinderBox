@@ -275,7 +275,8 @@ void MainWizard::setCinderLocationByIndex( int index )
 {
 	mCinderLocationIndex = index;
 
-	auto cinderLocationPath = Preferences::getCinderVersions()[index].path;
+    auto const cinderLocationPath = Preferences::getCinderVersions()[index].path;
+    auto const blocksPath = cinderLocationPath + "/blocks";
 
 	ProjectTemplateManager::clear();
 	mTemplateErrors.clear();
@@ -283,7 +284,7 @@ void MainWizard::setCinderLocationByIndex( int index )
 
 	CinderBlockManager::clear();
 	mCinderBlockErrors.clear();
-	CinderBlockManager::scan( cinderLocationPath, &mCinderBlockErrors );
+    CinderBlockManager::scan( blocksPath, &mCinderBlockErrors );
 
 	mCinderBlocks = CinderBlockManager::getCinderBlocks();
 
