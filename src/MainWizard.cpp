@@ -98,6 +98,9 @@ void MainWizard::paintEvent( QPaintEvent */*event*/ )
 #elif defined Q_OS_MAC
 	float scale = 0.7f;
 	int offset = 10;
+#elif defined Q_OS_LINUX
+    float scale = 0.5f;
+    int offset = 6;
 #endif
 	painter.drawPixmap( offset, height() - pmap.height() * scale - offset, pmap.width() * scale, pmap.height() * scale, pmap );
 }
@@ -110,6 +113,8 @@ void MainWizard::loadPreferences()
 		mDefaultLocation = QDir::toNativeSeparators( joinPath( QDir::homePath(), "Documents" ) );
 #elif defined Q_OS_MAC
 		mDefaultLocation = QDir::toNativeSeparators( joinPath( QDir::homePath(), "Documents" ) );
+#elif defined Q_OS_LINUX
+        mDefaultLocation = QDir::toNativeSeparators( joinPath( QDir::homePath(), "Documents" ) );
 #endif
 	}
 }

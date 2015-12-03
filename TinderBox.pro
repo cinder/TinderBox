@@ -22,6 +22,10 @@ win32 {
     RC_FILE = Resources_Win.rc
 }
 
+linux {
+    QMAKE_CXXFLAGS += -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=0
+}
+
 SOURCES += \
     src/CinderBlock.cpp \
     src/CinderBlockManager.cpp \
