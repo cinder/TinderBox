@@ -47,7 +47,7 @@ SOURCES += \
     src/WizardPageCinderBlocks.cpp \
     src/WizardPageMain.cpp \
     src/parse/PList.cpp \
-    src/parse/Vc2015WinrtProj.cpp \
+    src/parse/Vc2015WinRtProj.cpp \
     src/parse/Vc2013Proj.cpp \
     src/parse/VcProj.cpp \
     src/parse/XCodeProj.cpp \
@@ -78,7 +78,7 @@ HEADERS  += \
     src/WizardPageCinderBlocks.h \
     src/WizardPageMain.h \
     src/parse/PList.h \
-    src/parse/Vc2015WinrtProj.h \
+    src/parse/Vc2015WinRtProj.h \
     src/parse/Vc2013Proj.h \
     src/parse/VcProj.h \
     src/parse/XCodeProj.h \
