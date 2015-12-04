@@ -21,7 +21,7 @@
  POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "Vc2015WinrtProj.h"
+#include "Vc2015WinRtProj.h"
 
 Vc2013WinrtProjRef Vc2015WinrtProj::createFromString( const QString &VcProj, const QString &VcProjFilters )
 {

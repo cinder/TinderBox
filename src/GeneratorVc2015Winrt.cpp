@@ -24,7 +24,7 @@
 #include "GeneratorVc2015Winrt.h"
 #include "ProjectTemplateManager.h"
 #include "Util.h"
-#include "Vc2015WinrtProj.h"
+#include "Vc2015WinRtProj.h"
 
 #include <fstream>
 
