@@ -21,47 +21,23 @@
  POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef WIZARDPAGEENVOPTIONS_H
-#define WIZARDPAGEENVOPTIONS_H
+#pragma once
 
-#include <QWizardPage>
-#include "MainWizard.h"
+#include <QString>
+#include <QFileInfo>
 
-namespace Ui {
-class WizardPageEnvOptions;
-}
+#include "TinderBox.h"
+#include "ProjectTemplate.h"
+#include "GeneratorBase.h"
+#include "Instancer.h"
+#include "VcProj.h"
 
-class WizardPageEnvOptions : public QWizardPage
-{
-    Q_OBJECT
+class GeneratorLinuxCmake : public GeneratorBase {
+  public:
+    GeneratorLinuxCmake();
 
-public:
-	explicit WizardPageEnvOptions( MainWizard *parent = 0 );
-    ~WizardPageEnvOptions();
-
-	void	initializePage() override;
-
-	// VC 2013
-	bool	isVc2013Win32Selected() const;
-	bool	isVc2013X64Selected() const;
-	bool	isVc2013DesktopGlSelected() const;
-	bool	isVc2013AngleSelected() const;
-
-	// VC 2013 WinRT
-    bool	isVc2015WinRtWin32Selected() const;
-    bool	isVc2015WinRtX64Selected() const;
-    bool	isVc2015WinRtArmSelected() const;
-
-public slots:
-	void	updateNextButton( bool /*ignored*/ );
-
-private:
-	void	recursiveEnable( QLayout *layout, bool enable );
-
-	Ui::WizardPageEnvOptions	*ui;
-	MainWizard					*mParent;
-
-    bool			mVc2013Enabled, mVc2015WinRtEnabled;
+    QMap<QString,QString>   getConditions() const override;
+    void                    generate( class Instancer *master ) override;
+  protected:
+    QString		mFoundationName;
 };
-
-#endif // WIZARDPAGEENVOPTIONS_H

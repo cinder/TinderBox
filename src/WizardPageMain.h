@@ -54,8 +54,9 @@ public:
 	void	enablePlatform( size_t platform, bool enable );
 	bool	isXcodeSelected() const;
 	bool	isXcodeIosSelected() const;
-	bool	isVc2013WinrtSelected() const;
+    bool	isVc2015WinrtSelected() const;
 	bool	isVc2013Selected() const;
+    bool	isLinuxCmakeSelected() const;
 
 	void                updateCinderVersionsCtrl();
 	void				updateTemplates();

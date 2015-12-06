@@ -18,5 +18,7 @@
         <file>icons/vc_winrt.png</file>
         <file>icons/vc2013.png</file>
         <file>icons/vc2013_selected.png</file>
+        <file>icons/linux_selected.png</file>
+        <file>icons/linux.png</file>
     </qresource>
 </RCC>

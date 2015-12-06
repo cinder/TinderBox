@@ -21,47 +21,33 @@
  POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef WIZARDPAGEENVOPTIONS_H
-#define WIZARDPAGEENVOPTIONS_H
+#include "GeneratorLinuxCmake.h"
 
-#include <QWizardPage>
-#include "MainWizard.h"
-
-namespace Ui {
-class WizardPageEnvOptions;
+GeneratorLinuxCmake::GeneratorLinuxCmake()
+{
 }
 
-class WizardPageEnvOptions : public QWizardPage
+QMap<QString,QString> GeneratorLinuxCmake::getConditions() const
 {
-    Q_OBJECT
+    QMap<QString,QString> conditions;
+    conditions["compiler"] = "clang";
+    conditions["os"] = "linux";
+    return conditions;
+}
 
-public:
-	explicit WizardPageEnvOptions( MainWizard *parent = 0 );
-    ~WizardPageEnvOptions();
+void GeneratorLinuxCmake::generate( Instancer *master )
+{
+    QMap<QString,QString> conditions = getConditions();
+    conditions["config"] = "*";
+    QList<Template::File> files = master->getFilesMatchingConditions( conditions );
 
-	void	initializePage() override;
+    auto projectConfigurations = getConditions();
 
-	// VC 2013
-	bool	isVc2013Win32Selected() const;
-	bool	isVc2013X64Selected() const;
-	bool	isVc2013DesktopGlSelected() const;
-	bool	isVc2013AngleSelected() const;
+    QString absDirPath = master->createDirectory( "linux" );
+//    QString cinderPath = master->getMacRelCinderPath( absDirPath );
 
-	// VC 2013 WinRT
-    bool	isVc2015WinRtWin32Selected() const;
-    bool	isVc2015WinRtX64Selected() const;
-    bool	isVc2015WinRtArmSelected() const;
+    // Load the foundation files as strings; replace variables appropriately
+//    QString replacedVcproj = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( "linux_cmake" + "/CMakeLists.txt" ),
+//        master->getNamePrefix(), cinderPath );
 
-public slots:
-	void	updateNextButton( bool /*ignored*/ );
-
-private:
-	void	recursiveEnable( QLayout *layout, bool enable );
-
-	Ui::WizardPageEnvOptions	*ui;
-	MainWizard					*mParent;
-
-    bool			mVc2013Enabled, mVc2015WinRtEnabled;
-};
-
-#endif // WIZARDPAGEENVOPTIONS_H
+}

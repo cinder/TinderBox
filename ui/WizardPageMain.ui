@@ -375,13 +375,23 @@ background-color: red;
             </item>
             <item>
              <property name="text">
-              <string>WinRT
-(VC 2015)</string>
+              <string>WinRT</string>
              </property>
              <property name="icon">
               <iconset>
                <normalon>:/icons/vc_winrt.png</normalon>
                <selectedoff>:/icons/vc_winrt_selected.png</selectedoff>
+              </iconset>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Linux</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normalon>:/icons/linux.png</normalon>
+               <selectedoff>:/icons/linux_selected.png</selectedoff>
               </iconset>
              </property>
             </item>
