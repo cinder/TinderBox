@@ -459,7 +459,7 @@
         <number>4</number>
        </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="vc2013WinRtPlatformLabel">
+        <widget class="QLabel" name="vc2015WinRtPlatformLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
