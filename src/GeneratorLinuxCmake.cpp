@@ -60,4 +60,20 @@ void GeneratorLinuxCmake::generate( Instancer *master )
     }
 
     cmakeProj->write( absDirPath );
+
+    // create the build executable script
+    QString replacedBuildScript = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( "linux_cmake/build" ),
+        master->getNamePrefix(), cinderPath );
+    QString writePath = QDir( absDirPath ).absoluteFilePath( "build" );
+    QFile outFile( writePath );
+    if( ! outFile.open( QIODevice::WriteOnly ) )
+        throw CmakeProjExc( "Failed to write to " + writePath );
+    QTextStream ts( &outFile );
+    ts.setCodec( "UTF-8" );
+    ts << replacedBuildScript;
+    outFile.close();
+    // equivalent of chmod a+x
+    QFile::Permissions perms = outFile.permissions();
+    perms |= QFileDevice::ExeOwner | QFileDevice::ExeUser | QFileDevice::ExeOther | QFileDevice::ExeGroup;
+    outFile.setPermissions( perms );
 }
