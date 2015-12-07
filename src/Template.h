@@ -46,7 +46,7 @@ class Template {
 		QString			getAbsoluteInputPath() const { return mInputAbsolutePath; }
 		QString			getRelativeInputPath() const { return mInputRelativePath; }
 		QString			getAbsoluteOutputPath() const;
-		QString			getMacOutputPathRelativeTo( const QString &relativeTo, const QString &cinderPath ) const {
+		QString			getPosixOutputPathRelativeTo( const QString &relativeTo, const QString &cinderPath ) const {
 			return getOutputPathRelativeTo( relativeTo, cinderPath ); }
 		QString			getWinOutputPathRelativeTo( const QString &relativeTo, const QString &cinderPath ) const {
 			return getOutputPathRelativeTo( relativeTo, cinderPath ).replace( "/", "\\" ); }

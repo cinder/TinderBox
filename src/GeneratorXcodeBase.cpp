@@ -53,9 +53,9 @@ void GeneratorXcodeBase::setupIncludePaths( XCodeProjRef xcodeProj, Instancer *m
 		QList<Template::IncludePath> includePaths = master->getIncludePathsMatchingConditions( conditionsWithSdk );
 		for( QList<Template::IncludePath>::ConstIterator pathIt = includePaths.begin(); pathIt != includePaths.end(); ++pathIt )
 			if( pathIt->isSystem() )
-				xcodeProj->addSystemHeaderPath( config, realXcodeSdkName( *sdkIt ), pathIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
+                xcodeProj->addSystemHeaderPath( config, realXcodeSdkName( *sdkIt ), pathIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
 			else
-				xcodeProj->addUserHeaderPath( config, realXcodeSdkName( *sdkIt ), pathIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
+                xcodeProj->addUserHeaderPath( config, realXcodeSdkName( *sdkIt ), pathIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
 	}
 }
 
@@ -69,7 +69,7 @@ void GeneratorXcodeBase::setupLibraryPaths( XCodeProjRef xcodeProj, Instancer *m
 		conditionsWithSdk["sdk"] = *sdkIt;
 		QList<Template::LibraryPath> includePaths = master->getLibraryPathsMatchingConditions( conditionsWithSdk );
 		for( QList<Template::LibraryPath>::ConstIterator pathIt = includePaths.begin(); pathIt != includePaths.end(); ++pathIt )
-			xcodeProj->addLibraryPath( config, realXcodeSdkName( *sdkIt ), pathIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
+            xcodeProj->addLibraryPath( config, realXcodeSdkName( *sdkIt ), pathIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
 	}
 }
 
@@ -83,7 +83,7 @@ void GeneratorXcodeBase::setupFrameworkPaths( XCodeProjRef xcodeProj, Instancer 
 		conditionsWithSdk["sdk"] = *sdkIt;
 		QList<Template::FrameworkPath> frameworkPaths = master->getFrameworkPathsMatchingConditions( conditionsWithSdk );
 		for( QList<Template::FrameworkPath>::ConstIterator pathIt = frameworkPaths.begin(); pathIt != frameworkPaths.end(); ++pathIt )
-			xcodeProj->addFrameworkPath( config, realXcodeSdkName( *sdkIt ), pathIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
+            xcodeProj->addFrameworkPath( config, realXcodeSdkName( *sdkIt ), pathIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
 	}
 }
 
@@ -107,7 +107,7 @@ void GeneratorXcodeBase::setupStaticLibaries( XCodeProjRef xcodeProj, Instancer 
 		conditionsWithSdk["sdk"] = *sdkIt;
 		QList<Template::StaticLibrary> libraryPaths = master->getStaticLibrariesMatchingConditions( conditionsWithSdk );
 		for( QList<Template::StaticLibrary>::ConstIterator pathIt = libraryPaths.begin(); pathIt != libraryPaths.end(); ++pathIt ) {
-			xcodeProj->addStaticLibrary( config, realXcodeSdkName( *sdkIt ), pathIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
+            xcodeProj->addStaticLibrary( config, realXcodeSdkName( *sdkIt ), pathIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
 		}
 	}
 }
@@ -122,7 +122,7 @@ void GeneratorXcodeBase::setupDynamicLibaries( XCodeProjRef xcodeProj, Instancer
 		conditionsWithSdk["sdk"] = *sdkIt;
 		QList<Template::DynamicLibrary> libraryPaths = master->getDynamicLibrariesMatchingConditions( conditionsWithSdk );
 		for( QList<Template::DynamicLibrary>::ConstIterator pathIt = libraryPaths.begin(); pathIt != libraryPaths.end(); ++pathIt ) {
-			xcodeProj->addDynamicLibrary( config, realXcodeSdkName( *sdkIt ), pathIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
+            xcodeProj->addDynamicLibrary( config, realXcodeSdkName( *sdkIt ), pathIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ) );
 		}
 	}
 }
@@ -210,21 +210,21 @@ void GeneratorXcodeBase::generate( Instancer *master )
 	// setup files
     for( QList<Template::File>::ConstIterator fileIt = files.begin(); fileIt != files.end(); ++fileIt ) {
 		if( fileIt->getType() == Template::File::SOURCE )
-			xcodeProj->addSourceFile( fileIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ), fileIt->getVirtualPath(), fileIt->getCompileAs() );
+            xcodeProj->addSourceFile( fileIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ), fileIt->getVirtualPath(), fileIt->getCompileAs() );
 		else if( fileIt->getType() == Template::File::HEADER )
-			xcodeProj->addHeaderFile( fileIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ), fileIt->getVirtualPath() );
+            xcodeProj->addHeaderFile( fileIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ), fileIt->getVirtualPath() );
 		else if( fileIt->getType() == Template::File::RESOURCE )
-			xcodeProj->addResource( fileIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ),
+            xcodeProj->addResource( fileIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ),
 				fileIt->getVirtualPath(), fileIt->isOutputBuildExcluded() );
 		else if( fileIt->getType() == Template::File::FRAMEWORK )
-			xcodeProj->addFramework( fileIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ), fileIt->getVirtualPath(),
+            xcodeProj->addFramework( fileIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ), fileIt->getVirtualPath(),
 				fileIt->isOutputAbsolute(), fileIt->isOutputSdkRelative() );
 	}
 
 	// we process buildCopy's last so that we can try to reuse an existing fileref
 	for( QList<Template::File>::ConstIterator fileIt = files.begin(); fileIt != files.end(); ++fileIt ) {
 		if( fileIt->getType() == Template::File::BUILD_COPY )
-			xcodeProj->addBuildCopy( fileIt->getMacOutputPathRelativeTo( xcodeAbsPath, cinderPath ), fileIt->getVirtualPath(),
+            xcodeProj->addBuildCopy( fileIt->getPosixOutputPathRelativeTo( xcodeAbsPath, cinderPath ), fileIt->getVirtualPath(),
 									 fileIt->isOutputAbsolute(), fileIt->isOutputSdkRelative(), fileIt->getBuildCopyDestination() );
 	}
 

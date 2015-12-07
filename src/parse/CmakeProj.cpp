@@ -30,8 +30,23 @@ CmakeProjRef CmakeProj::createFromString( const QString &s )
     return CmakeProjRef( new CmakeProj( s ) );
 }
 
+void CmakeProj::addSourceFile( const QString &fileSystemPath, const QString &virtualPath )
+{
+    mSourceFilePaths.push_back( fileSystemPath );
+}
+
 void CmakeProj::write( const QString &directoryPath ) const
 {
+    QString srcFileString;
+    for( auto &srcFile : mSourceFilePaths ) {
+        if( ! srcFileString.isEmpty() )
+            srcFileString += "\n";
+        srcFileString = srcFileString + "\t" + srcFile.toUtf8();
+    }
+
+    QString contents = mOriginalData;
+    contents.replace( "_TBOX_CMAKE_SRC_FILES_", srcFileString );
+
     QDir dir( directoryPath );
     QString writePath = dir.absoluteFilePath( "CMakeLists.txt" );
     QFile outFile( writePath );
@@ -39,10 +54,10 @@ void CmakeProj::write( const QString &directoryPath ) const
         throw CmakeProjExc( "Failed to write to " + writePath );
     QTextStream ts( &outFile );
     ts.setCodec( "UTF-8" );
-    ts << mData;
+    ts << contents;
 }
 
 CmakeProj::CmakeProj( const QString &s )
-    : mData( s )
+    : mOriginalData( s )
 {
 }

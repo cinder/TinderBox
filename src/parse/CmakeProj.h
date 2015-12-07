@@ -37,9 +37,11 @@ class CmakeProj {
   public:
     static CmakeProjRef  createFromString( const QString &s );
 
-    void		write( const QString &directoryPath ) const;
+    void        write( const QString &directoryPath ) const;
+    void        addSourceFile( const QString &fileSystemPath, const QString &virtualPath );
   protected:
     CmakeProj( const QString &s );
 
-    QString         mData;
+    QString             mOriginalData;
+    QVector<QString>    mSourceFilePaths;
 };

@@ -53,5 +53,11 @@ void GeneratorLinuxCmake::generate( Instancer *master )
     QString replacedCmakeProj = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( "linux_cmake/CMakeLists.txt" ),
         master->getNamePrefix(), cinderPath );
     auto cmakeProj = CmakeProj::createFromString( replacedCmakeProj );
+
+    for( QList<Template::File>::ConstIterator fileIt = files.begin(); fileIt != files.end(); ++fileIt ) {
+        if( fileIt->getType() == Template::File::SOURCE )
+            cmakeProj->addSourceFile( fileIt->getPosixOutputPathRelativeTo( absDirPath, cinderPath ), fileIt->getVirtualPath() );
+    }
+
     cmakeProj->write( absDirPath );
 }
