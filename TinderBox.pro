@@ -54,7 +54,8 @@ SOURCES += \
     src/pugixml/pugixml.cpp \
     src/WizardPageEnvOptions.cpp \
     src/GeneratorVc2015Winrt.cpp \
-    src/GeneratorLinuxCmake.cpp
+    src/GeneratorLinuxCmake.cpp \
+    src/parse/CmakeProj.cpp
 
 HEADERS  += \
     src/CinderBlock.h \
@@ -87,7 +88,8 @@ HEADERS  += \
     src/pugixml/pugixml.hpp \
     src/WizardPageEnvOptions.h \
     src/GeneratorVc2015Winrt.h \
-    src/GeneratorLinuxCmake.h
+    src/GeneratorLinuxCmake.h \
+    src/parse/CmakeProj.h
 
 RESOURCES += \
     TinderBox.qrc

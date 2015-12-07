@@ -21,37 +21,28 @@
  POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "GeneratorLinuxCmake.h"
-#include "ProjectTemplateManager.h"
-#include "Util.h"
 #include "CmakeProj.h"
 
-GeneratorLinuxCmake::GeneratorLinuxCmake()
+#include <QDir>
+
+CmakeProjRef CmakeProj::createFromString( const QString &s )
 {
+    return CmakeProjRef( new CmakeProj( s ) );
 }
 
-QMap<QString,QString> GeneratorLinuxCmake::getConditions() const
+void CmakeProj::write( const QString &directoryPath ) const
 {
-    QMap<QString,QString> conditions;
-    conditions["compiler"] = "clang";
-    conditions["os"] = "linux";
-    return conditions;
+    QDir dir( directoryPath );
+    QString writePath = dir.absoluteFilePath( "CMakeLists.txt" );
+    QFile outFile( writePath );
+    if( ! outFile.open( QIODevice::WriteOnly ) )
+        throw CmakeProjExc( "Failed to write to " + writePath );
+    QTextStream ts( &outFile );
+    ts.setCodec( "UTF-8" );
+    ts << mData;
 }
 
-void GeneratorLinuxCmake::generate( Instancer *master )
+CmakeProj::CmakeProj( const QString &s )
+    : mData( s )
 {
-    QMap<QString,QString> conditions = getConditions();
-    conditions["config"] = "*";
-    QList<Template::File> files = master->getFilesMatchingConditions( conditions );
-
-    auto projectConfigurations = getConditions();
-
-    QString absDirPath = master->createDirectory( "linux" );
-    QString cinderPath = master->getMacRelCinderPath( absDirPath );
-
-    // Load the foundation files as strings; replace variables appropriately
-    QString replacedCmakeProj = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( "linux_cmake/CMakeLists.txt" ),
-        master->getNamePrefix(), cinderPath );
-    auto cmakeProj = CmakeProj::createFromString( replacedCmakeProj );
-    cmakeProj->write( absDirPath );
 }

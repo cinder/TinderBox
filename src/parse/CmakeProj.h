@@ -21,37 +21,25 @@
  POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "GeneratorLinuxCmake.h"
-#include "ProjectTemplateManager.h"
-#include "Util.h"
-#include "CmakeProj.h"
+#pragma once
 
-GeneratorLinuxCmake::GeneratorLinuxCmake()
-{
-}
+#include <QSharedPointer>
+#include "TinderBox.h"
 
-QMap<QString,QString> GeneratorLinuxCmake::getConditions() const
-{
-    QMap<QString,QString> conditions;
-    conditions["compiler"] = "clang";
-    conditions["os"] = "linux";
-    return conditions;
-}
+typedef QSharedPointer<class CmakeProj>		CmakeProjRef;
 
-void GeneratorLinuxCmake::generate( Instancer *master )
-{
-    QMap<QString,QString> conditions = getConditions();
-    conditions["config"] = "*";
-    QList<Template::File> files = master->getFilesMatchingConditions( conditions );
+class CmakeProjExc : public TinderBoxExc {
+  public:
+    CmakeProjExc( const QString &excMsg ) : TinderBoxExc( excMsg ) {}
+};
 
-    auto projectConfigurations = getConditions();
+class CmakeProj {
+  public:
+    static CmakeProjRef  createFromString( const QString &s );
 
-    QString absDirPath = master->createDirectory( "linux" );
-    QString cinderPath = master->getMacRelCinderPath( absDirPath );
+    void		write( const QString &directoryPath ) const;
+  protected:
+    CmakeProj( const QString &s );
 
-    // Load the foundation files as strings; replace variables appropriately
-    QString replacedCmakeProj = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( "linux_cmake/CMakeLists.txt" ),
-        master->getNamePrefix(), cinderPath );
-    auto cmakeProj = CmakeProj::createFromString( replacedCmakeProj );
-    cmakeProj->write( absDirPath );
-}
+    QString         mData;
+};
