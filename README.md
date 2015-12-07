@@ -13,6 +13,7 @@ Binaries of TinderBox are included in the [Cinder repository](https://github.com
 * Run the installer. You can skip the account registration if you prefer.
 * Mac users can disable everything besides Qt Creator and **clang 64-bit** under Qt 5.5
 * Windows users can disable everything besides Qt Creator and **msvc2013 64-bit** under Qt 5.5
+* Linux users can disable everything besides Qt Creator and **Desktop gcc 64-bit** under Qt 5.5
 * Once installation is complete, open TinderBox.pro from the repo, which should in turn open with Qt Creator.
 * The first time you do so, a Configure Project dialog will appear. The defaults are fine - press the **Configure Project** button
 * After Qt Creator reads the project, you can build and run it by pressing the green Play button icon in the lower left corner.
