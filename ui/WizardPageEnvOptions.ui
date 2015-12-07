@@ -333,7 +333,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="vc2013WinRtLayout" stretch="0,0">
+    <layout class="QVBoxLayout" name="vc2015WinRtLayout" stretch="0,0">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -353,7 +353,7 @@
       <number>0</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="vc2013WinRtHeaderLayout">
+      <layout class="QHBoxLayout" name="vc2015WinRtHeaderLayout">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -367,7 +367,7 @@
         <number>2</number>
        </property>
        <item>
-        <widget class="QLabel" name="vc2013WinRtHeaderIcon">
+        <widget class="QLabel" name="vc2015WinRtHeaderIcon">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -404,7 +404,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="vc2013WinRtHeaderLabel">
+        <widget class="QLabel" name="vc2015WinRtHeaderLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>1</horstretch>
@@ -433,7 +433,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QFormLayout" name="vc2013WinRtFieldsLayout">
+      <layout class="QFormLayout" name="vc2015WinRtFieldsLayout">
        <property name="sizeConstraint">
         <enum>QLayout::SetMinimumSize</enum>
        </property>
@@ -483,7 +483,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <layout class="QHBoxLayout" name="vc2013WinRtPlatformLayout">
+        <layout class="QHBoxLayout" name="vc2015WinRtPlatformLayout">
          <property name="spacing">
           <number>12</number>
          </property>
@@ -491,7 +491,7 @@
           <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item>
-          <widget class="QCheckBox" name="vc2013WinRtWin32CheckBox">
+          <widget class="QCheckBox" name="vc2015WinRtWin32CheckBox">
            <property name="text">
             <string>Win32</string>
            </property>
@@ -501,7 +501,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="vc2013WinRtX64CheckBox">
+          <widget class="QCheckBox" name="vc2015WinRtX64CheckBox">
            <property name="text">
             <string>x64</string>
            </property>
@@ -511,7 +511,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="vc2013WinRtArmCheckBox">
+          <widget class="QCheckBox" name="vc2015WinRtArmCheckBox">
            <property name="text">
             <string>ARM</string>
            </property>

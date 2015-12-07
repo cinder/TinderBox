@@ -38,9 +38,9 @@ WizardPageEnvOptions::WizardPageEnvOptions( MainWizard *parent ) :
 	connect( ui->vc2013AngleCheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
 
 	// VC 2013 WinRT
-    connect( ui->vc2013WinRtWin32CheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
-    connect( ui->vc2013WinRtX64CheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
-    connect( ui->vc2013WinRtArmCheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
+    connect( ui->vc2015WinRtWin32CheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
+    connect( ui->vc2015WinRtX64CheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
+    connect( ui->vc2015WinRtArmCheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
 
 #if ! defined( Q_OS_MAC )
 	QFont font = ui->envOptionsLabel->font();
@@ -48,7 +48,7 @@ WizardPageEnvOptions::WizardPageEnvOptions( MainWizard *parent ) :
 	ui->envOptionsLabel->setFont( font );
 	font.setPointSize( 10 );
 	ui->vc2013HeaderLabel->setFont( font );
-	ui->vc2013WinRtHeaderLabel->setFont( font );
+    ui->vc2015WinRtHeaderLabel->setFont( font );
 	font.setPointSize( 9 );
 	ui->vc2013PlatformLabel->setFont( font );
 	ui->vc2013RendererLabel->setFont( font );
@@ -62,7 +62,7 @@ void WizardPageEnvOptions::initializePage()
     mVc2015WinRtEnabled = mParent->getWizardPageMain()->isVc2015WinrtSelected();
 
 	recursiveEnable( ui->vc2013Layout, mVc2013Enabled );
-    recursiveEnable( ui->vc2013WinRtLayout, mVc2015WinRtEnabled );
+    recursiveEnable( ui->vc2015WinRtLayout, mVc2015WinRtEnabled );
 }
 
 void WizardPageEnvOptions::recursiveEnable( QLayout *layout, bool enable )
@@ -101,17 +101,17 @@ bool WizardPageEnvOptions::isVc2013AngleSelected() const
 // VC 2015 WinRT
 bool WizardPageEnvOptions::isVc2015WinRtWin32Selected() const
 {
-    return ui->vc2013WinRtWin32CheckBox->isChecked();
+    return ui->vc2015WinRtWin32CheckBox->isChecked();
 }
 
 bool WizardPageEnvOptions::isVc2015WinRtX64Selected() const
 {
-    return ui->vc2013WinRtX64CheckBox->isChecked();
+    return ui->vc2015WinRtX64CheckBox->isChecked();
 }
 
 bool WizardPageEnvOptions::isVc2015WinRtArmSelected() const
 {
-    return ui->vc2013WinRtArmCheckBox->isChecked();
+    return ui->vc2015WinRtArmCheckBox->isChecked();
 }
 
 /////////////////////////////////////////////////////////////
