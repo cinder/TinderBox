@@ -55,7 +55,7 @@ void Preferences::load()
 		CinderVersion cv;
 		cv.name = settings.value( "cinderVersionName" ).toString();
 		cv.path = settings.value( "cinderVersionPath" ).toString();
-		cv.valid = QDir( cv.path + "/blocks/__appTemplates" ).exists();
+        cv.valid = QDir( cv.path + "/blocks/__AppTemplates" ).exists();
 		cv.shouldSave = true;
 		mCinderVersions.push_back( cv );
 	}
@@ -96,7 +96,7 @@ int Preferences::addCinderVersionInst( const QString &name, const QString &path,
 	CinderVersion v;
 	v.name = name;
 	v.path = path;
-	v.valid = QDir( v.path + "/blocks/__appTemplates" ).exists();
+    v.valid = QDir( v.path + "/blocks/__AppTemplates" ).exists();
 	v.shouldSave = shouldSave;
 	mCinderVersions.push_back( v );
 
