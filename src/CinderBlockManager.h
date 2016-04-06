@@ -35,9 +35,9 @@ class CinderBlockManager
   public:
 	static const QList<CinderBlock>&		getCinderBlocks() { return inst()->mCinderBlocks; }
 	static const QList<ProjectTemplate>&	getProjectTemplates() { return inst()->mProjectTemplates; }
-	
+
 	//! add a directory to be scanned for CinderBlocks
-	static void		scan( const QString &path, ErrorList *errors );
+	static void		scan( const QString &path, int depth, ErrorList *errors );
 	static void		clear() { inst()->clearInst(); }
 	CinderBlock*	findById( const QString &id );
 
