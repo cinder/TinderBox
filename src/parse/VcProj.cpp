@@ -264,7 +264,7 @@ void VcProj::setTargetExtension( const VcProj::ProjectConfiguration &config, con
 		pugi::xml_node newNode = propertyGroup.node().append_child( "TargetExt" );
 		newNode.append_child(pugi::node_pcdata).set_value( extension.toUtf8().constData() );
 		pugi::xml_attribute attrNode = newNode.append_attribute( "Condition" );
-		attrNode.set_value( config.asString().toStdString().c_str() );
+        attrNode.set_value( getConditionString( config.getConfig(), config.getPlatform() ).c_str() );
 	}
 }
 
