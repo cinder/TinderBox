@@ -88,7 +88,7 @@ void Preferences::save()
 int Preferences::addCinderVersionInst( const QString &name, const QString &path, bool shouldSave )
 {
 	// see if we already have this version
-	for( size_t idx = 0; idx < mCinderVersions.size(); ++idx ) {
+	for( int idx = 0; idx < mCinderVersions.size(); ++idx ) {
 		if( QFileInfo( path ).absoluteFilePath() == QFileInfo( mCinderVersions[idx].path ).absoluteFilePath() )
 			return idx;
 	}
