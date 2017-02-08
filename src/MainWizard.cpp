@@ -86,7 +86,7 @@ MainWizard::MainWizard(QWidget *parent) :
 	mPrefs = new Prefs( this );
 }
 
-void MainWizard::paintEvent( QPaintEvent */*event*/ )
+void MainWizard::paintEvent( QPaintEvent * /*event*/ )
 {
 	QPainter painter( this );
 	QPixmap pmap(":/resources/background.png");
