@@ -123,7 +123,7 @@ void Preferences::updateCinderVersionInst( size_t index, const QString &name, co
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Preferences
 Prefs::Prefs(QWidget *parent)
-: QDialog( parent, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint ),
+: QDialog( parent ),
   ui( new Ui::Prefs )
 {
     ui->setupUi(this);
