@@ -282,6 +282,7 @@ Template::BuildSetting::BuildSetting( const QString &parentPath, const pugi::xml
 Template::PreprocessorDefine::PreprocessorDefine( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors )
 	: Item( parentPath, QString::fromUtf8( dom.first_child().value() ), dom, conditions )
 {
+	Q_UNUSED(errors);
 	mValue = QString::fromUtf8( dom.first_child().value() );
 }
 
@@ -290,6 +291,7 @@ Template::PreprocessorDefine::PreprocessorDefine( const QString &parentPath, con
 Template::OutputExtension::OutputExtension( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors )
 	: Item( parentPath, QString::fromUtf8( dom.first_child().value() ), dom, conditions )
 {
+	Q_UNUSED(errors);
 	mValue = QString::fromUtf8( dom.first_child().value() );
 }
 
