@@ -239,6 +239,9 @@
            <property name="text">
             <string>x64</string>
            </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
         </layout>
