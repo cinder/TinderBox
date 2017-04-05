@@ -34,7 +34,7 @@ class GeneratorVc2015WinRt : public GeneratorVcBase {
 	struct Options;
 
     GeneratorVc2015WinRt( const Options & options )
-        : GeneratorVcBase( "vc2015_winrt" ), mOptions( options )
+        : GeneratorVcBase( "vc2015_uwp" ), mOptions( options )
 	{}
 
 	struct Options {

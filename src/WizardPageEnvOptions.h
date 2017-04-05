@@ -41,16 +41,16 @@ public:
 
 	void	initializePage() override;
 
-	// VC 2013
-	bool	isVc2013Win32Selected() const;
-	bool	isVc2013X64Selected() const;
-	bool	isVc2013DesktopGlSelected() const;
-	bool	isVc2013AngleSelected() const;
+	// VC 2015
+	bool	isVc2015Win32Selected() const;
+	bool	isVc2015X64Selected() const;
+	bool	isVc2015DesktopGlSelected() const;
+	bool	isVc2015AngleSelected() const;
 
-	// VC 2013 WinRT
-	bool	isVc2013WinRtWin32Selected() const;
-	bool	isVc2013WinRtX64Selected() const;
-	bool	isVc2013WinRtArmSelected() const;
+	// VC 2015 WinRT
+	bool	isVc2015WinRtWin32Selected() const;
+	bool	isVc2015WinRtX64Selected() const;
+	bool	isVc2015WinRtArmSelected() const;
 
 public slots:
 	void	updateNextButton( bool /*ignored*/ );
@@ -61,7 +61,7 @@ private:
 	Ui::WizardPageEnvOptions	*ui;
 	MainWizard					*mParent;
 
-	bool			mVc2013Enabled, mVc2013WinRtEnabled;
+	bool			mVc2015Enabled, mVc2015WinRtEnabled;
 };
 
 #endif // WIZARDPAGEENVOPTIONS_H

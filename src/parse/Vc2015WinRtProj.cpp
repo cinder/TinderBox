@@ -23,9 +23,9 @@
 
 #include "Vc2015WinRtProj.h"
 
-Vc2013WinrtProjRef Vc2015WinrtProj::createFromString( const QString &VcProj, const QString &VcProjFilters )
+Vc2015WinrtProjRef Vc2015WinrtProj::createFromString( const QString &VcProj, const QString &VcProjFilters )
 {
-    return Vc2013WinrtProjRef( new Vc2015WinrtProj( VcProj, VcProjFilters ) );
+    return Vc2015WinrtProjRef( new Vc2015WinrtProj( VcProj, VcProjFilters ) );
 }
 
 Vc2015WinrtProj::Vc2015WinrtProj( const QString &vcprojString, const QString &vcProjFiltersString )
@@ -40,7 +40,7 @@ QString	Vc2015WinrtProj::getSlnHeaderString() const
 
 	result += "\r\n";
 	result += "Microsoft Visual Studio Solution File, Format Version 12.00\r\n";
-	result += "# Visual Studio 2013\r\n";
+	result += "# Visual Studio 2015\r\n";
 
 	return result;
 }

@@ -21,32 +21,32 @@
  POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "GeneratorVc2013.h"
+#include "GeneratorVc2015.h"
 #include "ProjectTemplateManager.h"
 #include "Util.h"
-#include "Vc2013Proj.h"
+#include "Vc2015Proj.h"
 
 #include <fstream>
 
-QMap<QString,QString> GeneratorVc2013::getConditions() const
+QMap<QString,QString> GeneratorVc2015::getConditions() const
 {
 	QMap<QString,QString> conditions;
-	conditions["compiler"] = "vc2013";
+	conditions["compiler"] = "vc2015";
 	conditions["os"] = "msw";
 	return conditions;
 }
 
-QString GeneratorVc2013::getCompiler() const
+QString GeneratorVc2015::getCompiler() const
 {
 	return QString( "120" );
 }
 
-VcProjRef GeneratorVc2013::createVcProj( const QString &VcProj, const QString &VcProjFilters )
+VcProjRef GeneratorVc2015::createVcProj( const QString &VcProj, const QString &VcProjFilters )
 {
-    return Vc2013Proj::createFromString( VcProj, VcProjFilters );
+    return Vc2015Proj::createFromString( VcProj, VcProjFilters );
 }
 
-std::vector<VcProj::ProjectConfiguration> GeneratorVc2013::getPlatformConfigurations() const
+std::vector<VcProj::ProjectConfiguration> GeneratorVc2015::getPlatformConfigurations() const
 {
     std::vector<VcProj::ProjectConfiguration> result;
 
@@ -86,7 +86,7 @@ std::vector<VcProj::ProjectConfiguration> GeneratorVc2013::getPlatformConfigurat
 	return result;
 }
 
-bool GeneratorVc2013::getSlnDeploy() const
+bool GeneratorVc2015::getSlnDeploy() const
 {
 	return false;
 }
