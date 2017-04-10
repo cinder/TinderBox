@@ -83,6 +83,17 @@ std::vector<VcProj::ProjectConfiguration> GeneratorVc2015::getPlatformConfigurat
 		result.back().setConditions( conditions );}
 	}
 
+    // x64 ANGLE
+    if( mOptions.mEnableWin32 && mOptions.mEnableAngle ) {
+        result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug_ANGLE" ), QString::fromUtf8( "x64" ) ) );
+        {auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "debug";
+        result.back().setConditions( conditions );}
+
+        result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release_ANGLE" ), QString::fromUtf8( "x64" ) ) );
+        {auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "release";
+        result.back().setConditions( conditions );}
+    }
+
 	return result;
 }
 

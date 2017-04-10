@@ -119,7 +119,7 @@ bool WizardPageEnvOptions::isVc2015WinRtArmSelected() const
 void WizardPageEnvOptions::updateNextButton( bool /*ignored*/ )
 {
 	bool vc2015PlatformChecked = isVc2015Win32Selected() || isVc2015X64Selected();
-	bool vc2015RendererChecked = isVc2015DesktopGlSelected() || ( isVc2015Win32Selected() && isVc2015AngleSelected() );
+    bool vc2015RendererChecked = isVc2015DesktopGlSelected() || isVc2015AngleSelected();
 	bool vc2015Good = ( ! mVc2015Enabled ) || ( vc2015PlatformChecked && vc2015RendererChecked );
 
 	bool vc2015WinRtPlatformChecked = isVc2015WinRtWin32Selected() || isVc2015WinRtX64Selected() || isVc2015WinRtArmSelected();
