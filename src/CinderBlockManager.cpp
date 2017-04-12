@@ -44,11 +44,11 @@ CinderBlockManager::CinderBlockManager()
 {
 }
 
-void CinderBlockManager::scan( const QString &path, ErrorList *errors )
+void CinderBlockManager::scan(const QString &path, int depth, ErrorList *errors )
 {
 	QDir dir( path );
 	dir.setFilter( QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot );
-	inst()->scanAndParseCinderBlocks( dir, dir, 2, errors );
+	inst()->scanAndParseCinderBlocks( dir, dir, depth, errors );
 }
 
 CinderBlock* CinderBlockManager::findById( const QString &id )
@@ -56,7 +56,7 @@ CinderBlock* CinderBlockManager::findById( const QString &id )
 	for( QList<CinderBlock>::Iterator bIt = mCinderBlocks.begin(); bIt != mCinderBlocks.end(); ++bIt )
 		if( bIt->getId() == id )
 			return &(*bIt);
-	
+
 	return NULL;
 }
 
@@ -83,12 +83,12 @@ void CinderBlockManager::scanAndParseCinderBlocks( const QDir &cinderDir, const 
 			if( result ) {
 				pugi::xpath_node_set blocks = doc.select_nodes("/cinder/block");
 				for( pugi::xpath_node_set::const_iterator it = blocks.begin(); it != blocks.end(); ++it ) {
-					
+
 					QString relative = cinderDir.relativeFilePath( fileInfo.absoluteFilePath() );
 					errorList->setActiveFilePath( QString( "<a href=\"" ) + QUrl::fromLocalFile( fileInfo.absoluteFilePath() ).toString() + "\">" + relative + "</a>" );
-					
+
 					mCinderBlocks.push_back( CinderBlock( dir.absolutePath(), it->node(), errorList ) );
-					
+
 					// does this block have any templates?
 					pugi::xpath_node_set templates = doc.select_nodes( "/cinder/template" );
 					for( pugi::xpath_node_set::const_iterator it = templates.begin(); it != templates.end(); ++it ) {
@@ -110,7 +110,7 @@ void CinderBlockManager::scanAndParseCinderBlocks( const QDir &cinderDir, const 
 						}
 					}
 				}
-				
+
 				QFileInfo iconPath( dir, "cinderblock.png" );
 				if( iconPath.exists() ) {
 					mIconCache[iconPath.filePath()] = QIcon( iconPath.filePath() );
@@ -124,7 +124,7 @@ void CinderBlockManager::scanAndParseCinderBlocks( const QDir &cinderDir, const 
             }
 		}
 	}
-	
+
 	errorList->setActiveFilePath( "" );
 }
 
@@ -136,6 +136,6 @@ const QIcon& CinderBlockManager::getIconInst( const QString &path )
 	}
 	if( mIconCache.find( path ) != mIconCache.end() )
 		mIconCache[path] = QIcon( path );
-	
+
 	return mIconCache[path];
 }

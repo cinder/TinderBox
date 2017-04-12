@@ -91,7 +91,7 @@ void MainWizard::paintEvent( QPaintEvent * /*event*/ )
 	QPainter painter( this );
 	QPixmap pmap(":/resources/background.png");
 	painter.setRenderHint( QPainter::SmoothPixmapTransform );
-	painter.setOpacity( 0.1f );	
+	painter.setOpacity( 0.1f );
 #if defined Q_OS_WIN
 	float scale = 0.5f;
 	int offset = 6;
@@ -275,7 +275,9 @@ void MainWizard::setCinderLocationByIndex( int index )
 {
 	mCinderLocationIndex = index;
 
-	auto cinderLocationPath = Preferences::getCinderVersions()[index].path;
+	auto const cinderLocationPath = Preferences::getCinderVersions()[index].path;
+	auto const blocksPath = cinderLocationPath + "/blocks";
+	auto const adjacentPath = cinderLocationPath + "/..";
 
 	ProjectTemplateManager::clear();
 	mTemplateErrors.clear();
@@ -283,7 +285,8 @@ void MainWizard::setCinderLocationByIndex( int index )
 
 	CinderBlockManager::clear();
 	mCinderBlockErrors.clear();
-	CinderBlockManager::scan( cinderLocationPath, &mCinderBlockErrors );
+	CinderBlockManager::scan( blocksPath, 2, &mCinderBlockErrors );
+	CinderBlockManager::scan( adjacentPath, 1, &mCinderBlockErrors );
 
 	mCinderBlocks = CinderBlockManager::getCinderBlocks();
 
