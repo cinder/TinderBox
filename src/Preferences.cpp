@@ -88,9 +88,9 @@ void Preferences::save()
 int Preferences::addCinderVersionInst( const QString &name, const QString &path, bool shouldSave )
 {
 	// see if we already have this version
-	for( int idx = 0; idx < mCinderVersions.size(); ++idx ) {
-		if( QFileInfo( path ).absoluteFilePath() == QFileInfo( mCinderVersions[idx].path ).absoluteFilePath() )
-			return idx;
+	for( size_t idx = 0; idx < mCinderVersions.size(); ++idx ) {
+        if( QFileInfo( path ).absoluteFilePath() == QFileInfo( mCinderVersions[(int)idx].path ).absoluteFilePath() )
+            return (int)idx;
 	}
 
 	CinderVersion v;
@@ -113,7 +113,7 @@ void Preferences::removeCinderVersionInst( size_t index )
 
 void Preferences::updateCinderVersionInst( size_t index, const QString &name, const QString &path )
 {
-	Preferences::CinderVersion &cv( getCinderVersions()[index] );
+    Preferences::CinderVersion &cv( getCinderVersions()[(int)index] );
 	cv.name = name;
 	cv.path = path;
 
@@ -123,7 +123,7 @@ void Preferences::updateCinderVersionInst( size_t index, const QString &name, co
 ////////////////////////////////////////////////////////////////////////////////////////////
 // Preferences
 Prefs::Prefs(QWidget *parent)
-: QDialog( parent, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint ),
+: QDialog( parent ),
   ui( new Ui::Prefs )
 {
     ui->setupUi(this);

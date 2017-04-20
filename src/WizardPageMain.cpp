@@ -48,7 +48,7 @@
 #include <iostream>
 
 // add to mPlatformConditions too
-enum { XCODE_INDEX, XCODE_IOS_INDEX, VC2013_INDEX, VC2015_WINRT_INDEX, NUM_PLATFORMS };
+enum { XCODE_INDEX, XCODE_IOS_INDEX, VC2015_INDEX, VC2015_WINRT_INDEX, NUM_PLATFORMS };
 
 WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	QWizardPage(parent),
@@ -65,10 +65,10 @@ WizardPageMain::WizardPageMain( MainWizard *parent ) :
 	mPlatformConditions.push_back( xcodePlatCond );
 	QMap<QString,QString> xcodeIosPlatCond; xcodeIosPlatCond["os"] = "ios";
 	mPlatformConditions.push_back( xcodeIosPlatCond );
-	QMap<QString,QString> vc2013PlatCond; vc2013PlatCond["os"] = "msw"; vc2013PlatCond["compiler"] = "vc2013";
-	mPlatformConditions.push_back( vc2013PlatCond );
-    QMap<QString,QString> vc2013WinrtPlatCond; vc2013WinrtPlatCond["os"] = "winrt"; vc2013WinrtPlatCond["compiler"] = "vc2013";
-    mPlatformConditions.push_back( vc2013WinrtPlatCond );
+	QMap<QString,QString> vc2015PlatCond; vc2015PlatCond["os"] = "msw"; vc2015PlatCond["compiler"] = "vc2015";
+	mPlatformConditions.push_back( vc2015PlatCond );
+    QMap<QString,QString> vc2015WinrtPlatCond; vc2015WinrtPlatCond["os"] = "winrt"; vc2015WinrtPlatCond["compiler"] = "vc2015";
+    mPlatformConditions.push_back( vc2015WinrtPlatCond );
 
 	updateTemplates();
 
@@ -80,7 +80,7 @@ WizardPageMain::WizardPageMain( MainWizard *parent ) :
 #endif
 
 #if defined Q_OS_WIN
-    ui->compilerList->item( VC2013_INDEX )->setSelected( true );
+    ui->compilerList->item( VC2015_INDEX )->setSelected( true );
 #endif
 
 	// Update controls
@@ -200,14 +200,14 @@ bool WizardPageMain::isXcodeIosSelected() const
     return ui->compilerList->item( XCODE_IOS_INDEX )->isSelected();
 }
 
-bool WizardPageMain::isVc2013WinrtSelected() const
+bool WizardPageMain::isVc2015WinrtSelected() const
 {
     return ui->compilerList->item( VC2015_WINRT_INDEX )->isSelected();
 }
 
-bool WizardPageMain::isVc2013Selected() const
+bool WizardPageMain::isVc2015Selected() const
 {
-	return ui->compilerList->item( VC2013_INDEX )->isSelected();
+	return ui->compilerList->item( VC2015_INDEX )->isSelected();
 }
 
 QString WizardPageMain::getCinderLocation() const

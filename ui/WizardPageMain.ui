@@ -364,12 +364,12 @@ background-color: red;
             </item>
             <item>
              <property name="text">
-              <string>VC 2013</string>
+              <string>VC 2015</string>
              </property>
              <property name="icon">
               <iconset>
-               <normalon>:/icons/vc2013.png</normalon>
-               <selectedon>:/icons/vc2013_selected.png</selectedon>
+               <normalon>:/icons/vc2015.png</normalon>
+               <selectedon>:/icons/vc2015_selected.png</selectedon>
               </iconset>
              </property>
             </item>

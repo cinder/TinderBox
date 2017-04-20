@@ -317,7 +317,7 @@ void WizardPageCinderBlocks::installTypeChanged()
 	currentCinderBlock->setInstallType( installType );
 	mParent->refreshRequiredBlocks();
 
-	size_t itemIndex = 0;
+    int itemIndex = 0;
 	for( QList<CinderBlock>::ConstIterator blockIt = mParent->getCinderBlocks().begin(); blockIt != mParent->getCinderBlocks().end(); ++blockIt, ++itemIndex ) {
 		ui->cinderBlockList->item( itemIndex )->setData( Qt::UserRole + 2, QVariant( (int)blockIt->getInstallType() ) );
 	}

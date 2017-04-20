@@ -21,19 +21,26 @@
  POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
+#include "Vc2015Proj.h"
 
-#include "VcProj.h"
-#include <QSharedPointer>
+Vc2015ProjRef Vc2015Proj::createFromString( const QString &VcProj, const QString &VcProjFilters )
+{
+	return Vc2015ProjRef( new Vc2015Proj( VcProj, VcProjFilters ) );
+}
 
-typedef QSharedPointer<class Vc2013Proj>		Vc2013ProjRef;
+Vc2015Proj::Vc2015Proj( const QString &vcprojString, const QString &vcProjFiltersString )
+	: VcProj( vcprojString, vcProjFiltersString )
+{
 
-class Vc2013Proj : public VcProj {
-  public:
-	static Vc2013ProjRef		createFromString( const QString &VcProj, const QString &VcProjFilters );
+}
 
-  private:
-	Vc2013Proj( const QString &vcprojString, const QString &vcProjFiltersString );
+QString	Vc2015Proj::getSlnHeaderString() const
+{
+	QString result;
 
-	virtual QString	getSlnHeaderString() const;
-};
+	result += "\r\n";
+	result += "Microsoft Visual Studio Solution File, Format Version 12.00\r\n";
+    result += "# Visual Studio 2015\r\n";
+
+	return result;
+}

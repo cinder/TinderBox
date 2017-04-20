@@ -16,7 +16,7 @@
         <file>icons/tinderbox_app_icon.ico</file>
         <file>icons/vc_winrt_selected.png</file>
         <file>icons/vc_winrt.png</file>
-        <file>icons/vc2013.png</file>
-        <file>icons/vc2013_selected.png</file>
+        <file>icons/vc2015.png</file>
+        <file>icons/vc2015_selected.png</file>
     </qresource>
 </RCC>

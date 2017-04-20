@@ -33,7 +33,7 @@
 #include "GeneratorXcodeMac.h"
 #include "GeneratorXcodeIos.h"
 #include "GeneratorVc2015Winrt.h"
-#include "GeneratorVc2013.h"
+#include "GeneratorVc2015.h"
 #include "Util.h"
 
 #include <QAbstractButton>
@@ -136,9 +136,9 @@ void MainWizard::loadTemplates()
 
 int MainWizard::nextId() const
 {
-    // If we're coming from the first page and the user has enabled VC2013, we need to present some options
+    // If we're coming from the first page and the user has enabled VC2015, we need to present some options
 	if( currentId() == PAGE_MAIN ) {
-		if( mWizardPageMain->isVc2013Selected() || mWizardPageMain->isVc2013WinrtSelected() )
+		if( mWizardPageMain->isVc2015Selected() || mWizardPageMain->isVc2015WinrtSelected() )
 			return PAGE_ENV_OPTIONS;
         else
 			return PAGE_CINDER_BLOCKS;
@@ -232,19 +232,19 @@ void MainWizard::generateProject()
 			gen.addGenerator( new GeneratorXcodeMac() );
 		if( mWizardPageMain->isXcodeIosSelected() )
 			gen.addGenerator( new GeneratorXcodeIos() );
-		if( mWizardPageMain->isVc2013Selected() ) {
-			GeneratorVc2013::Options options;
-			options.enableWin32( mWizardPageEnvOptions->isVc2013Win32Selected() );
-			options.enableX64( mWizardPageEnvOptions->isVc2013X64Selected() );
-			options.enableDesktopGl( mWizardPageEnvOptions->isVc2013DesktopGlSelected() );
-			options.enableAngle( mWizardPageEnvOptions->isVc2013AngleSelected() );
-			gen.addGenerator( new GeneratorVc2013( options ) );
+		if( mWizardPageMain->isVc2015Selected() ) {
+			GeneratorVc2015::Options options;
+			options.enableWin32( mWizardPageEnvOptions->isVc2015Win32Selected() );
+			options.enableX64( mWizardPageEnvOptions->isVc2015X64Selected() );
+			options.enableDesktopGl( mWizardPageEnvOptions->isVc2015DesktopGlSelected() );
+			options.enableAngle( mWizardPageEnvOptions->isVc2015AngleSelected() );
+			gen.addGenerator( new GeneratorVc2015( options ) );
 		}
-		if( mWizardPageMain->isVc2013WinrtSelected() ) {
+		if( mWizardPageMain->isVc2015WinrtSelected() ) {
             GeneratorVc2015WinRt::Options options;
-			options.enableWin32( mWizardPageEnvOptions->isVc2013WinRtWin32Selected() );
-			options.enableX64( mWizardPageEnvOptions->isVc2013WinRtX64Selected() );
-			options.enableArm( mWizardPageEnvOptions->isVc2013WinRtArmSelected() );
+			options.enableWin32( mWizardPageEnvOptions->isVc2015WinRtWin32Selected() );
+			options.enableX64( mWizardPageEnvOptions->isVc2015WinRtX64Selected() );
+			options.enableArm( mWizardPageEnvOptions->isVc2015WinRtArmSelected() );
             gen.addGenerator( new GeneratorVc2015WinRt( options ) );
 		}
 		for( QList<CinderBlock>::ConstIterator blockIt = mCinderBlocks.begin(); blockIt != mCinderBlocks.end(); ++blockIt ) {

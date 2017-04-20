@@ -31,7 +31,7 @@ SOURCES += \
     src/CinderBlockManager.cpp \
     src/ErrorList.cpp \
     src/FirstTimeDlg.cpp \
-    src/GeneratorVc2013.cpp \
+    src/GeneratorVc2015.cpp \
     src/GeneratorVcBase.cpp \
     src/GeneratorXcodeBase.cpp \
     src/GeneratorXcodeIos.cpp \
@@ -48,7 +48,7 @@ SOURCES += \
     src/WizardPageMain.cpp \
     src/parse/PList.cpp \
     src/parse/Vc2015WinRtProj.cpp \
-    src/parse/Vc2013Proj.cpp \
+    src/parse/Vc2015Proj.cpp \
     src/parse/VcProj.cpp \
     src/parse/XCodeProj.cpp \
     src/pugixml/pugixml.cpp \
@@ -62,7 +62,7 @@ HEADERS  += \
     src/FirstTimeDlg.h \
     src/GeneratorBase.h \
     src/GeneratorVc2015Winrt.h \
-    src/GeneratorVc2013.h \
+    src/GeneratorVc2015.h \
     src/GeneratorVcBase.h \
     src/GeneratorXcodeBase.h \
     src/GeneratorXcodeIos.h \
@@ -79,7 +79,7 @@ HEADERS  += \
     src/WizardPageMain.h \
     src/parse/PList.h \
     src/parse/Vc2015WinRtProj.h \
-    src/parse/Vc2013Proj.h \
+    src/parse/Vc2015Proj.h \
     src/parse/VcProj.h \
     src/parse/XCodeProj.h \
     src/pugixml/pugiconfig.hpp \
