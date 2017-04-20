@@ -356,12 +356,12 @@ QString VcProj::getSlnString() const
 	result += "EndProject\r\n";
 	result += "Global\r\n";
 		result += "\tGlobalSection(SolutionConfigurationPlatforms) = preSolution\r\n";
-			for( int i = 0; i < mProjectConfigurations.size(); ++i )
+			for( size_t i = 0; i < mProjectConfigurations.size(); ++i )
 				result += "\t\t" + mProjectConfigurations[i].asString() + " = " + mProjectConfigurations[i].asString() + "\r\n";
 		result += "\tEndGlobalSection\r\n";
 		result += "\tGlobalSection(ProjectConfigurationPlatforms) = postSolution\r\n";
 
-		for( int i = 0; i < mProjectConfigurations.size(); ++i ) {
+		for( size_t i = 0; i < mProjectConfigurations.size(); ++i ) {
 			const auto projConfig = mProjectConfigurations[i];
 			result += "\t\t" + getProjGuid() + "." + projConfig.asString() + ".ActiveCfg = " + projConfig.asString() + "\r\n";
 			result += "\t\t" + getProjGuid() + "." + projConfig.asString() + ".Build.0 = " + projConfig.asString() + "\r\n";
