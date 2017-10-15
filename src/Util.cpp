@@ -30,6 +30,17 @@
 #include <QUuid>
 #include <iostream>
 
+const QString kTBoxPrefix           = "_TBOX_PREFIX_";
+const QString kTBoxProject          = "_TBOX_PROJECT_";
+const QString kTBoxProjectDir       = "_TBOX_PROJECT_DIR_";
+const QString kTBoxCinderPath    = "_TBOX_CINDER_PATH_";
+const QString kUuid0				= "_TBOX_UUID_0_";
+const QString kUuid1				= "_TBOX_UUID_1_";
+const QString kUuid2				= "_TBOX_UUID_2_";
+const QString kLowerUuid0			= "_TBOX_LOWER_UUID_0_";
+const QString kLowerUuid1			= "_TBOX_LOWER_UUID_1_";
+const QString kLowerUuid2			= "_TBOX_LOWER_UUID_2_";
+
 QString getAppDirPath() {
     QString appDirPath = QApplication::applicationDirPath();
 #if defined Q_OS_MAC
@@ -110,7 +121,7 @@ void copyDir( const QString &srcPath, const QString &dstPath, bool overwriteExis
 	}
 }
 
-void copyFileOrDir( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix, bool windowsLineEndings )
+void copyFileOrDir( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix, const QString &replaceProjDir, bool windowsLineEndings )
 {
 	// test immediately for the destination already existing. Remove it if we should
 	bool dstExists = dst.exists();
@@ -128,10 +139,11 @@ void copyFileOrDir( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool r
 	if( src.isDir() )
 		copyDir( srcPath, dstPath, overwriteExisting );
 	else if( ( ! dstExists ) || overwriteExisting )
-		copyFile( QFileInfo( srcPath ), QFileInfo( dstPath ), replaceContents, replacePrefix, windowsLineEndings );
+        copyFile( QFileInfo( srcPath ), QFileInfo( dstPath ), replaceContents, replacePrefix, replaceProjDir, windowsLineEndings );
 }
 
-void copyFile( QFileInfo src, QFileInfo dst, bool replaceContents, QString replacePrefix, bool windowsLineEndings )
+void copyFile( QFileInfo src, QFileInfo dst, bool replaceContents, QString replacePrefix,
+               QString replaceProjDir, bool windowsLineEndings )
 {
 	QString dstPath;
 	QString srcPath = src.absoluteFilePath();
@@ -163,15 +175,6 @@ void copyFile( QFileInfo src, QFileInfo dst, bool replaceContents, QString repla
 		dstStream.setCodec( "UTF-8" );
 		dstStream.setGenerateByteOrderMark( false );
 
-		const QString kTBoxPrefix           = "_TBOX_PREFIX_";
-		const QString kTBoxProject          = "_TBOX_PROJECT_";
-		const QString kUuid0				= "_TBOX_UUID_0_";
-		const QString kUuid1				= "_TBOX_UUID_1_";
-		const QString kUuid2				= "_TBOX_UUID_2_";
-		const QString kLowerUuid0			= "_TBOX_LOWER_UUID_0_";
-		const QString kLowerUuid1			= "_TBOX_LOWER_UUID_1_";
-		const QString kLowerUuid2			= "_TBOX_LOWER_UUID_2_";
-
 		QString uuids[3];
 		uuids[0] = QUuid::createUuid().toString().toUpper().replace( "{", "" ).replace( "}", "" );
 		uuids[1] = QUuid::createUuid().toString().toUpper().replace( "{", "" ).replace( "}", "" );;
@@ -185,6 +188,7 @@ void copyFile( QFileInfo src, QFileInfo dst, bool replaceContents, QString repla
 			QString line = srcStream.readLine();
 			line.replace( kTBoxPrefix, replacePrefix );
 			line.replace( kTBoxProject, replacePrefix );
+            line.replace( kTBoxProjectDir, replaceProjDir );
 
 			line.replace( kUuid0, uuids[0] );
 			line.replace( kUuid1, uuids[1] );
@@ -209,7 +213,7 @@ std::string toWinPath( const std::string &path )
 	return temp.toStdString();
 }
 
-QString loadAndStringReplace( QFileInfo path, QString replacePrefix, QString cinderPath )
+QString loadAndStringReplace( QFileInfo path, QString replacePrefix, QString cinderPath, QString replaceProjectDir )
 {
 	QFile srcFile( path.absoluteFilePath() );
 	if( ! srcFile.open( QFile::ReadOnly | QFile::Text ) ) {
@@ -221,14 +225,11 @@ QString loadAndStringReplace( QFileInfo path, QString replacePrefix, QString cin
 	srcStream.setAutoDetectUnicode( false );
 	srcStream.setCodec( "UTF-8" );
 
-	const QString kTBoxPrefix             = "_TBOX_PREFIX_";
-	const QString kTBoxProject            = "_TBOX_PROJECT_";
-	const QString kTBoxCinderPathToken    = "_TBOX_CINDER_PATH_";
-
 	QString contents = srcStream.readAll();
 	contents.replace( kTBoxPrefix, replacePrefix );
 	contents.replace( kTBoxProject, replacePrefix );
-	contents.replace( kTBoxCinderPathToken, cinderPath );
+    contents.replace( kTBoxProjectDir, replaceProjectDir );
+    contents.replace( kTBoxCinderPath, cinderPath );
 	
 	return contents;
 }

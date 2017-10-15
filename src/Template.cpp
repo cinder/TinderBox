@@ -209,11 +209,12 @@ void Template::File::setInputPath( const QString &parentPath, const QString &inp
 		mVirtualPath = "Cinder/" + mInputRelativePath;
 }
 
-void Template::File::setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath )
+void Template::File::setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath, const QString &replaceProjDir )
 {
 	QString replacedName = mInputRelativePath;
 	if( mReplaceName ) {
 		replacedName.replace( "_TBOX_PREFIX_", replaceName );
+        replacedName.replace( "_TBOX_PROJECT_DIR_", replaceProjDir );
 	}
 
 	if( outputPath.isEmpty() ) {
@@ -231,11 +232,12 @@ void Template::File::setOutputPath( const QString &outputPath, const QString &re
 	}
 }
 
-QString	Template::File::getMacOutputPath( const QString &outputPath, const QString &replacePrefix, const QString &cinderPath ) const
+QString	Template::File::getMacOutputPath( const QString &outputPath, const QString &replacePrefix, const QString &cinderPath, const QString &replaceProjDir ) const
 {
 	QString replacedName = mInputRelativePath;
 	if( mReplaceName ) {
 		replacedName.replace( "_TBOX_PREFIX_", replacePrefix );
+        replacedName.replace( "_TBOX_PROJECT_DIR_", replaceProjDir );
 	}
 
 	if( mOutputIsCinderRelative ) {
@@ -448,14 +450,14 @@ void Template::setOutputPathToInput()
 	setOutputPath( "", "", "" );
 }
 
-void Template::setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath )
+void Template::setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath, const QString &replaceProjDir )
 {
 	mOutputPath = outputPath;
 	mReplacementPrefix = replaceName;
 	mCinderPath = cinderPath;
 	
 	for( QList<File>::Iterator it = mFiles.begin(); it != mFiles.end(); ++it )
-		it->setOutputPath( outputPath, replaceName, cinderPath );
+        it->setOutputPath( outputPath, replaceName, cinderPath, replaceProjDir );
 
 	for( QList<IncludePath>::Iterator it = mIncludePaths.begin(); it != mIncludePaths.end(); ++it )
 		it->setOutputPath( outputPath, replaceName, cinderPath );

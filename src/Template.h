@@ -60,7 +60,7 @@ class Template {
 		// Should the instancer copy this file?
 		bool			shouldCopy() const { return ( ! mOutputIsAbsolute ) && ( ! mOutputIsCinderRelative ); }
 
-		virtual void	setOutputPath( const QString &outputPath, const QString &/*replaceName*/, const QString &cinderPath );
+        virtual void	setOutputPath( const QString &outputPath, const QString &/*replaceName*/, const QString &cinderPath );
 
 		bool			operator==( const Item &rhs ) const { return
 			mInputRelativePath == rhs.mInputRelativePath && mInputAbsolutePath == rhs.mInputAbsolutePath &&
@@ -111,8 +111,8 @@ class Template {
 		// build-copy-specific
 		QString			getBuildCopyDestination() const { return mBuildCopyDestination; }
 
-		virtual void	setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath );
-		QString			getMacOutputPath( const QString &outputPath, const QString &replacePrefix, const QString &cinderPath ) const;
+        virtual void	setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath, const QString &replaceProjDir );
+        QString			getMacOutputPath( const QString &outputPath, const QString &replacePrefix, const QString &cinderPath, const QString &replaceProjDir ) const;
 
 	  protected:
 		Type			mType;	  
@@ -200,7 +200,7 @@ class Template {
 	const QList<QString>&	getRequires() const { return mRequires; }
 
 	// for copy submodule type
-	void			setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath );
+    void			setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath, const QString &replaceProjDir );
 	// for relative/submodule type; output == input
 	void			setOutputPathToInput();
 	// prepends 'virtualPath' to all items' virtual paths

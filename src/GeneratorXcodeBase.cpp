@@ -178,13 +178,13 @@ void GeneratorXcodeBase::generate( Instancer *master )
     QList<Template::File> files = master->getFilesMatchingConditions( conditions );
 
 	// setup output paths of the project itself, and create its parent "xcode" directory
-	QString xcodeAbsPath = master->createDirectory( getRootFolderName() );
-    QString xcodeprojRelPath = getRootFolderName() + '/' + master->getNamePrefix() + ".xcodeproj";
+    QString xcodeAbsPath = master->createDirectory( "proj/" + getRootFolderName() );
+    QString xcodeprojRelPath = xcodeAbsPath + '/' + master->getNamePrefix() + ".xcodeproj";
     QString xcodeprojAbsPath = master->getAbsolutePath( xcodeprojRelPath );
     QString cinderPath = master->getMacRelCinderPath( xcodeAbsPath );
 	master->createDirectory( xcodeprojRelPath );
-	QString replaced = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( getRootFolderName() + "/project.pbxproj" ),
-			master->getNamePrefix(), cinderPath );
+    QString replaced = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( getRootFolderName() + "/project.pbxproj" ),
+            master->getNamePrefix(), cinderPath, xcodeAbsPath );
     XCodeProjRef xcodeProj = XCodeProj::createFromString( replaced );
 
 	// setup include paths
