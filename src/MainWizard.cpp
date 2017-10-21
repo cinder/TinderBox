@@ -218,41 +218,41 @@ bool MainWizard::checkForFirstTime()
 void MainWizard::generateProject()
 {
 	try {
-		Instancer gen( mWizardPageMain->getProjectTemplate() );
+		Instancer instancer( mWizardPageMain->getProjectTemplate() );
 #if 0
-		gen.setProjectName( mWizardPageMain->getProjectName() + QUuid::createUuid().toString() );
+		instancer.setProjectName( mWizardPageMain->getProjectName() + QUuid::createUuid().toString() );
 #else
-		gen.setProjectName( mWizardPageMain->getProjectName() );
+		instancer.setProjectName( mWizardPageMain->getProjectName() );
 #endif
-		gen.setNamePrefix( mWizardPageMain->getProjectName() );
-		gen.setBaseLocation( mWizardPageMain->getLocation() );
-		gen.setCinderAbsolutePath( mWizardPageMain->getCinderLocation() );
+		instancer.setNamePrefix( mWizardPageMain->getProjectName() );
+		instancer.setBaseLocation( mWizardPageMain->getLocation() );
+		instancer.setCinderAbsolutePath( mWizardPageMain->getCinderLocation() );
 
 		if( mWizardPageMain->isXcodeSelected() )
-			gen.addGenerator( new GeneratorXcodeMac() );
+			instancer.addGenerator( new GeneratorXcodeMac() );
 		if( mWizardPageMain->isXcodeIosSelected() )
-			gen.addGenerator( new GeneratorXcodeIos() );
+			instancer.addGenerator( new GeneratorXcodeIos() );
 		if( mWizardPageMain->isVc2015Selected() ) {
 			GeneratorVc2015::Options options;
 			options.enableWin32( mWizardPageEnvOptions->isVc2015Win32Selected() );
 			options.enableX64( mWizardPageEnvOptions->isVc2015X64Selected() );
 			options.enableDesktopGl( mWizardPageEnvOptions->isVc2015DesktopGlSelected() );
 			options.enableAngle( mWizardPageEnvOptions->isVc2015AngleSelected() );
-			gen.addGenerator( new GeneratorVc2015( options ) );
+			instancer.addGenerator( new GeneratorVc2015( options ) );
 		}
 		if( mWizardPageMain->isVc2015WinrtSelected() ) {
             GeneratorVc2015WinRt::Options options;
 			options.enableWin32( mWizardPageEnvOptions->isVc2015WinRtWin32Selected() );
 			options.enableX64( mWizardPageEnvOptions->isVc2015WinRtX64Selected() );
 			options.enableArm( mWizardPageEnvOptions->isVc2015WinRtArmSelected() );
-            gen.addGenerator( new GeneratorVc2015WinRt( options ) );
+			instancer.addGenerator( new GeneratorVc2015WinRt( options ) );
 		}
 		for( QList<CinderBlock>::ConstIterator blockIt = mCinderBlocks.begin(); blockIt != mCinderBlocks.end(); ++blockIt ) {
 			if( blockIt->getInstallType() != CinderBlock::INSTALL_NONE )
-				gen.addCinderBlock( *blockIt );
+				instancer.addCinderBlock( *blockIt );
 		}
 
-		gen.generate( mWizardPageMain->shouldCreateGitRepo() );
+		instancer.instantiate( mWizardPageMain->shouldCreateGitRepo() );
 
 		// open the Finder / Explorer at the path we just created
 		QString localPath = joinPath( gen.getBaseLocation(), gen.getProjectName() );

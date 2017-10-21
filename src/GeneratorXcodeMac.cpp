@@ -29,10 +29,20 @@ GeneratorXcodeMac::GeneratorXcodeMac()
 	mSdks.push_back( QString() );
 }
 
-QMap<QString,QString> GeneratorXcodeMac::getConditions() const
+GeneratorConditions GeneratorXcodeMac::getConditions() const
 {
-    QMap<QString,QString> conditions;
-    conditions["compiler"] = "xcode";
-    conditions["os"] = "macosx";
-    return conditions;
+	std::vector<GeneratorConditions> result;
+	GeneratorConditions baseConditions;
+	baseConditions.setCondition( "compiler", "xcode" );
+	baseConditions.setCondition( "os", "macosx" );
+
+	auto debug = baseConditions;
+	debug.setCondition( "config", "debug" );
+	auto release = baseConditions;
+	release.setCondition( "config", "release" );
+
+	result.push_back( debug );
+	result.push_back( release );
+
+	return result;
 }

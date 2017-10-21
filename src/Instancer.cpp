@@ -46,6 +46,12 @@ std::cout << std::endl;
 #endif
 }
 
+void Cloner::copyFileOrDir( GeneratorConditions &cond, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix,
+					const QString &replaceProjDir, bool windowsLineEndings )
+{
+	::copyFileOrDir( src, dst, overwriteExisting, replaceContents, replacePrefix, replaceProjDir, windowsLineEndings );
+}
+
 Instancer::Instancer( const ProjectTemplate &projectTmpl )
 {
 	if( projectTmpl.hasParentProject() ) {
@@ -56,17 +62,15 @@ Instancer::Instancer( const ProjectTemplate &projectTmpl )
 		mProjectTmpl = projectTmpl;
 }
 
-void Instancer::generate( bool setupGit )
+void Instancer::instantiate( bool setupGit )
 {
 	if( ! prepareGenerate() )
 		return;
 
-	QList<QMap<QString,QString> > conditions;
+	std::vector<GeneratorConditions> copyConditions;
 	for( QList<GeneratorBaseRef>::Iterator childIt = mChildGenerators.begin(); childIt != mChildGenerators.end(); ++childIt ) {
-		conditions.push_back( (*childIt)->getConditions() );
-		// for copying, where this list of conditions is used, any config or SDK is valid
-		conditions.back()["sdk"] = "*";
-		conditions.back()["config"] = "*";
+		auto childConds = (*childIt)->getConditions();
+		copyConditions.insert( copyConditions.end(), childConds.begin(), childConds.end() );
 	}
 
 	// set template's output path
@@ -288,7 +292,7 @@ QList<Template::File> Instancer::getResourcesMatchingConditions( const QList<QMa
 	return getFileTypeMatchingConditions<Template::File::RESOURCE>( conditions, false );
 }
 
-QList<Template::File> Instancer::getFilesMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::File> Instancer::getFilesMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::File> result;
 	result.append( mProjectTmpl.getFilesMatchingConditions( conditions ) );
@@ -314,7 +318,7 @@ QList<Template::File> Instancer::getFilesMatchingConditions( const QMap<QString,
 	return result;
 }
 
-QList<Template::IncludePath> Instancer::getIncludePathsMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::IncludePath> Instancer::getIncludePathsMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::IncludePath> result;
 	result.append( mProjectTmpl.getIncludePathsMatchingConditions( conditions ) );
@@ -328,7 +332,7 @@ QList<Template::IncludePath> Instancer::getIncludePathsMatchingConditions( const
 	return result;
 }
 
-QList<Template::LibraryPath> Instancer::getLibraryPathsMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::LibraryPath> Instancer::getLibraryPathsMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::LibraryPath> result;
 	result.append( mProjectTmpl.getLibraryPathsMatchingConditions( conditions ) );
@@ -342,7 +346,7 @@ QList<Template::LibraryPath> Instancer::getLibraryPathsMatchingConditions( const
 	return result;
 }
 
-QList<Template::FrameworkPath> Instancer::getFrameworkPathsMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::FrameworkPath> Instancer::getFrameworkPathsMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::FrameworkPath> result;
 	result.append( mProjectTmpl.getFrameworkPathsMatchingConditions( conditions ) );
@@ -356,7 +360,7 @@ QList<Template::FrameworkPath> Instancer::getFrameworkPathsMatchingConditions( c
 	return result;
 }
 
-QList<Template::StaticLibrary> Instancer::getStaticLibrariesMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::StaticLibrary> Instancer::getStaticLibrariesMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::StaticLibrary> result;
 	result.append( mProjectTmpl.getStaticLibrariesMatchingConditions( conditions ) );
@@ -368,7 +372,7 @@ QList<Template::StaticLibrary> Instancer::getStaticLibrariesMatchingConditions( 
 	return result;
 }
 
-QList<Template::DynamicLibrary> Instancer::getDynamicLibrariesMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::DynamicLibrary> Instancer::getDynamicLibrariesMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::DynamicLibrary> result;
 	result.append( mProjectTmpl.getDynamicLibrariesMatchingConditions( conditions ) );
@@ -382,7 +386,7 @@ QList<Template::DynamicLibrary> Instancer::getDynamicLibrariesMatchingConditions
 	return result;
 }
 
-QList<Template::BuildSetting> Instancer::getBuildSettingsMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::BuildSetting> Instancer::getBuildSettingsMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::BuildSetting> result;
 	result.append( mProjectTmpl.getBuildSettingsMatchingConditions( conditions ) );
@@ -396,7 +400,7 @@ QList<Template::BuildSetting> Instancer::getBuildSettingsMatchingConditions( con
 	return result;
 }
 
-QList<Template::PreprocessorDefine> Instancer::getPreprocessorDefinesMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::PreprocessorDefine> Instancer::getPreprocessorDefinesMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::PreprocessorDefine> result;
 	result.append( mProjectTmpl.getPreprocessorDefinesMatchingConditions( conditions ) );
@@ -410,7 +414,7 @@ QList<Template::PreprocessorDefine> Instancer::getPreprocessorDefinesMatchingCon
 	return result;
 }
 
-QList<Template::OutputExtension> Instancer::getOutputExtensionsMatchingConditions( const QMap<QString,QString> &conditions ) const
+QList<Template::OutputExtension> Instancer::getOutputExtensionsMatchingConditions( const GeneratorConditions &conditions ) const
 {
 	QList<Template::OutputExtension> result;
 	result.append( mProjectTmpl.getOutputExtensionsMatchingConditions( conditions ) );

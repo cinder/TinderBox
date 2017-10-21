@@ -36,13 +36,14 @@ class GeneratorVcBase : public GeneratorBase {
   public:
 	GeneratorVcBase( const QString &foundationName );
 
-	virtual QMap<QString,QString>                       getConditions() const = 0;
+	virtual std::vector<GeneratorConditions>			getConditions() const = 0;
+	virtual GeneratorConditions							getBaseConditions() const = 0;
 	virtual QString                                     getCompiler() const = 0;
 	virtual std::vector<VcProj::ProjectConfiguration>	getPlatformConfigurations() const = 0;
 	virtual bool                                        getSlnDeploy() const = 0;
 	virtual bool                                        getUseRcFile() const = 0;
 
-	virtual void					generate( Instancer *master );
+	virtual void					generate( Instancer *instancer );
   protected:
 	virtual VcProjRef				createVcProj( const QString &vcProj, const QString &vcProjFilters ) = 0;
 

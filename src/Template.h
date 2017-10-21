@@ -30,6 +30,8 @@
 #include "TinderBox.h"
 #include "ErrorList.h"
 
+class GeneratorConditions;
+
 class Template {
   public:
     class File;
@@ -41,7 +43,7 @@ class Template {
 
 		Item( const QString &parentPath, const QString &inputPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions );
 
-		bool		conditionsMatch( const QMap<QString,QString> &conditions ) const;
+		bool		conditionsMatch( const GeneratorConditions &conditions ) const;
 		
 		QString			getAbsoluteInputPath() const { return mInputAbsolutePath; }
 		QString			getRelativeInputPath() const { return mInputRelativePath; }

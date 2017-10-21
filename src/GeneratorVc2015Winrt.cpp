@@ -28,12 +28,12 @@
 
 #include <fstream>
 
-QMap<QString,QString> GeneratorVc2015WinRt::getConditions() const
+GeneratorConditions GeneratorVc2015WinRt::getConditions() const
 {
 	QMap<QString,QString> conditions;
     conditions["compiler"] = "vc2015";
 	conditions["os"] = "winrt";
-	return conditions;
+	return GeneratorConditions( conditions );
 }
 
 QString GeneratorVc2015WinRt::getCompiler() const

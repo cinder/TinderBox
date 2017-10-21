@@ -24,6 +24,7 @@
 #pragma once
 
 #include "TinderBox.h"
+#include "GeneratorBase.h"
 
 #include <QDir>
 #include <QFile>
@@ -121,8 +122,8 @@ class VcProj
 		const QString&	getPlatform() const { return mPlatform; }
 		QString			asString() const { return mConfig + "|" + mPlatform; }
 
-		const QMap<QString,QString>&		getConditions() const { return mConditions; }
-		void								setConditions( const QMap<QString,QString> &conditions )
+		const GeneratorConditions			getConditions() const { return mConditions; }
+		void								setConditions( const GeneratorConditions &conditions )
 		{ mConditions = conditions; }
 
 		bool operator==( const ProjectConfiguration &rhs ) const
@@ -130,7 +131,7 @@ class VcProj
 
 	  private:
 		QString					mConfig, mPlatform;
-		QMap<QString,QString>	mConditions;
+		GeneratorConditions		mConditions;
 	};
 
   protected:

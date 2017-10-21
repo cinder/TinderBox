@@ -28,12 +28,34 @@
 
 #include <QDir>
 
+// Expresses generator-specific variables used in selecting while files to copy
+// from a Template. In addition to conditions, encodes
+class GeneratorConditions {
+  public:
+	GeneratorConditions() {}
+	GeneratorConditions( const QMap<QString,QString> &conditions )
+		: mConditions( conditions )
+	{}
+
+	void	setCondition( const QString &param, const QString &value ) { mConditions[param] = value; }
+	// true if conditions contain 'key' and value is either the same or wildcard
+	bool	keyMatches( const QString &key, const QString &value ) const {
+		return mConditions.contains( key ) && ( mConditions[key] == value || mConditions[key] == "*" );
+	}
+	QString	getConfig() const {
+		return mConditions.contains( "config" ) ? mConditions["config"] : QString();
+	}
+
+	// map from condition to value, such as "compiler" -> "vc2015"
+	QMap<QString,QString>   mConditions;
+};
+
 class GeneratorBase {
   public:
 	GeneratorBase() {}
 	virtual ~GeneratorBase() {}
 
-    virtual QMap<QString,QString>   getConditions() const = 0;
+	virtual std::vector<GeneratorConditions> getConditions() const = 0;
 	virtual void    generate( class Instancer *master ) = 0;
 };
 

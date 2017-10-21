@@ -34,27 +34,27 @@
 
 class GeneratorXcodeBase : public GeneratorBase {
   public:
-	virtual QMap<QString,QString>	getConditions() const = 0;
-	virtual void					generate( Instancer *master );
-	virtual QString					getRootFolderName() const = 0;
+	virtual std::vector<GeneratorConditions>	getConditions() const = 0;
+	virtual void								generate( Instancer *instancer );
+	virtual QString								getRootFolderName() const = 0;
 	
-	virtual QList<QString>			getSdks() const = 0;
+	virtual QList<QString>						getSdks() const = 0;
 	
   protected:
-	void	setupIncludePaths( XCodeProjRef xcodeProj, Instancer *master, const QMap<QString,QString> &conditions, const QString &config,
+	void	setupIncludePaths( XCodeProjRef xcodeProj, Instancer *instancer, const GeneratorConditions &conditions,
 								const QString &xcodeAbsPath, const QString &cinderPath );
-	void	setupLibraryPaths( XCodeProjRef xcodeProj, Instancer *master, const QMap<QString,QString> &conditions, const QString &config,
+	void	setupLibraryPaths( XCodeProjRef xcodeProj, Instancer *instancer, const GeneratorConditions &conditions,
 								const QString &xcodeAbsPath, const QString &cinderPath );
-	void	setupFrameworkPaths( XCodeProjRef xcodeProj, Instancer *master, const QMap<QString,QString> &conditions, const QString &config,
+	void	setupFrameworkPaths( XCodeProjRef xcodeProj, Instancer *instancer, const GeneratorConditions &conditions,
 								const QString &xcodeAbsPath, const QString &cinderPath );
-	void	setupStaticLibaries( XCodeProjRef xcodeProj, Instancer *master, const QMap<QString,QString> &conditions, const QString &config,
+	void	setupStaticLibaries( XCodeProjRef xcodeProj, Instancer *instancer, const GeneratorConditions &conditions,
 								const QString &xcodeAbsPath, const QString &cinderPath );
-	void	setupDynamicLibaries( XCodeProjRef xcodeProj, Instancer *master, const QMap<QString,QString> &conditions, const QString &config,
+	void	setupDynamicLibaries( XCodeProjRef xcodeProj, Instancer *instancer, const GeneratorConditions &conditions,
 								const QString &xcodeAbsPath, const QString &cinderPath );
-	void	setupPreprocessorDefines( XCodeProjRef xcodeProj, Instancer *master, const QMap<QString,QString> &conditions, const QString &config );
-	void	setupBuildSettings( XCodeProjRef xcodeProj, Instancer *master, const QMap<QString,QString> &conditions, const QString &config );
-	void	setupOutputExtension( XCodeProjRef xcodeProj, Instancer *master, const QMap<QString,QString> &conditions, const QString &config );
+	void	setupPreprocessorDefines( XCodeProjRef xcodeProj, Instancer *instancer, const GeneratorConditions &conditions );
+	void	setupBuildSettings( XCodeProjRef xcodeProj, Instancer *instancer, const GeneratorConditions &conditions );
+	void	setupOutputExtension( XCodeProjRef xcodeProj, Instancer *instancer, const GeneratorConditions &conditions );
 								
 	template<typename T>
-	QList<QString> getUniqueSdks( Instancer *master, QList<T> (Instancer::*fn)( const QMap<QString,QString> & ) const, const QMap<QString,QString> &conditions );
+	QList<QString> getUniqueSdks( Instancer *instancer, QList<T> (Instancer::*fn)( const GeneratorConditions& ) const, const GeneratorConditions &conditions );
 };

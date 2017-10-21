@@ -30,7 +30,7 @@ class GeneratorXcodeMac : public GeneratorXcodeBase
   public:
 	GeneratorXcodeMac();
 
-	QMap<QString,QString>	getConditions() const;
+	GeneratorConditions		getConditions() const;
 	QString					getRootFolderName() const { return QString::fromUtf8( "xcode" ); }
 	
 	virtual QList<QString>			getSdks() const { return mSdks; }

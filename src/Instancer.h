@@ -31,25 +31,31 @@
 #include "CinderBlock.h"
 #include "Template.h"
 
+// Gathers list of files which needs to be copied, removes redundancies, and performs copy
+class Cloner {
+	void copyFileOrDir( GeneratorConditions &conditions, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents = false, const QString &replacePrefix = "",
+						const QString &replaceProjDir = "", bool windowsLineEndings = false );
+};
+
 class Instancer {
   public:
     Instancer( const ProjectTemplate &projectTmpl );
 
-	QList<Template::File>			 getFilesMatchingConditions( const QMap<QString,QString> &conditions ) const;
+	QList<Template::File>			 getFilesMatchingConditions( const GeneratorConditions &conditions ) const;
 	QList<Template::File>			 getResourcesMatchingConditions( const QList<QMap<QString,QString> > &conditions ) const;
-	QList<Template::IncludePath>	 getIncludePathsMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<Template::LibraryPath>	 getLibraryPathsMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<Template::FrameworkPath>	 getFrameworkPathsMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<Template::StaticLibrary>	 getStaticLibrariesMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<Template::DynamicLibrary>	 getDynamicLibrariesMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<Template::BuildSetting>	 getBuildSettingsMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<Template::PreprocessorDefine> getPreprocessorDefinesMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<Template::OutputExtension> getOutputExtensionsMatchingConditions( const QMap<QString,QString> &conditions ) const;
+	QList<Template::IncludePath>	 getIncludePathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::LibraryPath>	 getLibraryPathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::FrameworkPath>	 getFrameworkPathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::StaticLibrary>	 getStaticLibrariesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::DynamicLibrary>	 getDynamicLibrariesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::BuildSetting>	 getBuildSettingsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::PreprocessorDefine> getPreprocessorDefinesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::OutputExtension> getOutputExtensionsMatchingConditions( const GeneratorConditions &conditions ) const;
 
 	// takes ownership of childGen
 	void			addGenerator( GeneratorBase *childGen );
 	void			addCinderBlock( const CinderBlock &block ) { mCinderBlocks.push_back( CinderBlockRef( new CinderBlock( block ) ) ); }
-	void			generate( bool setupGit );
+	void			instantiate( bool setupGit );
 
 	QString         getProjectName() const;
 	void            setProjectName( const QString &projName );

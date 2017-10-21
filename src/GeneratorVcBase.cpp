@@ -33,58 +33,58 @@ GeneratorVcBase::GeneratorVcBase( const QString &foundationName )
 {
 }
 
-void GeneratorVcBase::setupIncludePaths( VcProjRef proj, Instancer *master, const VcProj::ProjectConfiguration &config, const QString &absPath, const QString &cinderPath )
+void GeneratorVcBase::setupIncludePaths( VcProjRef proj, Instancer *instancer, const VcProj::ProjectConfiguration &config, const QString &absPath, const QString &cinderPath )
 {
-	QList<Template::IncludePath> includePaths = master->getIncludePathsMatchingConditions( config.getConditions() );
+	QList<Template::IncludePath> includePaths = instancer->getIncludePathsMatchingConditions( config.getConditions() );
 	for( QList<Template::IncludePath>::ConstIterator pathIt = includePaths.begin(); pathIt != includePaths.end(); ++pathIt )
 		proj->addHeaderPath( config, pathIt->getWinOutputPathRelativeTo( absPath, cinderPath ) );
 }
 
-void GeneratorVcBase::setupLibraryPaths( VcProjRef proj, Instancer *master, const VcProj::ProjectConfiguration &config, const QString &absPath, const QString &cinderPath )
+void GeneratorVcBase::setupLibraryPaths( VcProjRef proj, Instancer *instancer, const VcProj::ProjectConfiguration &config, const QString &absPath, const QString &cinderPath )
 {
-	QList<Template::LibraryPath> libraryPaths = master->getLibraryPathsMatchingConditions( config.getConditions() );
+	QList<Template::LibraryPath> libraryPaths = instancer->getLibraryPathsMatchingConditions( config.getConditions() );
 	for( QList<Template::LibraryPath>::ConstIterator pathIt = libraryPaths.begin(); pathIt != libraryPaths.end(); ++pathIt )
 		proj->addLibraryPath( config, pathIt->getWinOutputPathRelativeTo( absPath, cinderPath ) );
 }
 
-void GeneratorVcBase::setupPreprocessorDefines( VcProjRef proj, Instancer *master, const VcProj::ProjectConfiguration &config )
+void GeneratorVcBase::setupPreprocessorDefines( VcProjRef proj, Instancer *instancer, const VcProj::ProjectConfiguration &config )
 {
-	QList<Template::PreprocessorDefine> preprocessorDefines = master->getPreprocessorDefinesMatchingConditions( config.getConditions() );
+	QList<Template::PreprocessorDefine> preprocessorDefines = instancer->getPreprocessorDefinesMatchingConditions( config.getConditions() );
 	for( QList<Template::PreprocessorDefine>::ConstIterator defineIt = preprocessorDefines.begin(); defineIt != preprocessorDefines.end(); ++defineIt )
 		proj->addPreprocessorDefine( config, defineIt->getValue() );
 }
 
-void GeneratorVcBase::generate( Instancer *master )
+void GeneratorVcBase::generate( Instancer *instancer )
 {
-	QMap<QString,QString> conditions = getConditions();
-	conditions["config"] = "*";
-	QList<Template::File> files = master->getFilesMatchingConditions( conditions );
+	GeneratorConditions conditions = getBaseConditions();
+	conditions.setCondition( "config", "*" );
+	QList<Template::File> files = instancer->getFilesMatchingConditions( conditions );
 
 	auto projectConfigurations = getPlatformConfigurations();
 
-	QString absDirPath = master->createDirectory( mFoundationName );
-	QString cinderPath = master->getWinRelCinderPath( absDirPath );
+	QString absDirPath = instancer->createDirectory( mFoundationName );
+	QString cinderPath = instancer->getWinRelCinderPath( absDirPath );
 
     // Load the foundation .vcxproj and .filters files as strings; replace _TBOX_CINDER_PATH_ appropriately
 	QString replacedVcproj = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( mFoundationName + "/foundation.vcxproj" ),
-        master->getNamePrefix(), cinderPath, absDirPath );
+		instancer->getNamePrefix(), cinderPath, absDirPath );
 	QString replacedVcprojFilters = loadAndStringReplace( ProjectTemplateManager::getFoundationPath( mFoundationName + "/foundation.vcxproj.filters" ),
-        master->getNamePrefix(), cinderPath, absDirPath );
+		instancer->getNamePrefix(), cinderPath, absDirPath );
     // parse these strings into an instance of VcProj
     VcProjRef vcProj = createVcProj( replacedVcproj, replacedVcprojFilters );
-    vcProj->setupNew( master->getNamePrefix(), getPlatformConfigurations(), getSlnDeploy(), getUseRcFile() );
+	vcProj->setupNew( instancer->getNamePrefix(), getPlatformConfigurations(), getSlnDeploy(), getUseRcFile() );
 
 	for( const auto &config : projectConfigurations ) {
-		QList<Template::OutputExtension> outExtensions = master->getOutputExtensionsMatchingConditions( config.getConditions() );
+		QList<Template::OutputExtension> outExtensions = instancer->getOutputExtensionsMatchingConditions( config.getConditions() );
 		if( ! outExtensions.empty() )
 			vcProj->setTargetExtension( config, outExtensions.first().getValue() );
 
-		setupIncludePaths( vcProj, master, config, absDirPath, cinderPath );
-		setupLibraryPaths( vcProj, master, config, absDirPath, cinderPath );
-		setupPreprocessorDefines( vcProj, master, config );
+		setupIncludePaths( vcProj, instancer, config, absDirPath, cinderPath );
+		setupLibraryPaths( vcProj, instancer, config, absDirPath, cinderPath );
+		setupPreprocessorDefines( vcProj, instancer, config );
 
 		// setup static libraries
-		QList<Template::StaticLibrary> staticLibraries = master->getStaticLibrariesMatchingConditions( config.getConditions() );
+		QList<Template::StaticLibrary> staticLibraries = instancer->getStaticLibrariesMatchingConditions( config.getConditions() );
 		for( QList<Template::StaticLibrary>::ConstIterator pathIt = staticLibraries.begin(); pathIt != staticLibraries.end(); ++pathIt )
 			vcProj->addStaticLibrary( config, pathIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ) );
 	}
@@ -108,5 +108,5 @@ void GeneratorVcBase::generate( Instancer *master )
 	}
 
 	// write to disk
-	vcProj->write( absDirPath, master->getNamePrefix() );
+	vcProj->write( absDirPath, instancer->getNamePrefix() );
 }

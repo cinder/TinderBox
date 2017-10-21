@@ -28,12 +28,22 @@
 
 #include <fstream>
 
-QMap<QString,QString> GeneratorVc2015::getConditions() const
+std::vector<GeneratorConditions> GeneratorVc2015::getConditions() const
+{
+	std::vector<GeneratorConditions> result;
+	std::vector<VcProj::ProjectConfiguration> platformConfigs = getPlatformConfigurations();
+	for( std::vector<VcProj::ProjectConfiguration>::const_iterator platformConfig = platformConfigs.begin(); platformConfig != platformConfigs.end(); ++platformConfig )
+		result.push_back( platformConfig->getConditions() );
+
+	return result;
+}
+
+GeneratorConditions GeneratorVc2015::getBaseConditions() const
 {
 	QMap<QString,QString> conditions;
 	conditions["compiler"] = "vc2015";
 	conditions["os"] = "msw";
-	return conditions;
+	return GeneratorConditions( conditions );
 }
 
 QString GeneratorVc2015::getCompiler() const
@@ -53,44 +63,44 @@ std::vector<VcProj::ProjectConfiguration> GeneratorVc2015::getPlatformConfigurat
 	// Win32 GL
 	if( mOptions.mEnableWin32 && mOptions.mEnableDesktopGl ) {
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "Win32" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "debug";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "i386" ); conditions.setCondition( "config", "debug" );
 		result.back().setConditions( conditions );}
 
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "Win32" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "release";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "i386" ); conditions.setCondition( "config", "release" );
 		result.back().setConditions( conditions );}
 	}
 
 	// Win32 ANGLE
 	if( mOptions.mEnableWin32 && mOptions.mEnableAngle ) {
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug_ANGLE" ), QString::fromUtf8( "Win32" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "debug";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "i386" ); conditions.setCondition( "config", "debug" );
 		result.back().setConditions( conditions );}
 
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release_ANGLE" ), QString::fromUtf8( "Win32" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "release";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "i386" ); conditions.setCondition( "config", "release" );
 		result.back().setConditions( conditions );}
 	}
 
 	// x64 GL
 	if( mOptions.mEnableX64 && mOptions.mEnableDesktopGl ) {
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "x64" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "debug";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "x86_64" ); conditions.setCondition( "config", "debug" );
 		result.back().setConditions( conditions );}
 
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "x64" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "release";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "x86_64" ); conditions.setCondition( "config", "release" );
 		result.back().setConditions( conditions );}
 	}
 
     // x64 ANGLE
     if( mOptions.mEnableWin32 && mOptions.mEnableAngle ) {
         result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug_ANGLE" ), QString::fromUtf8( "x64" ) ) );
-        {auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "debug";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "x86_64" ); conditions.setCondition( "config", "debug" );
         result.back().setConditions( conditions );}
 
         result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release_ANGLE" ), QString::fromUtf8( "x64" ) ) );
-        {auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "release";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "x86_64" ); conditions.setCondition( "config", "release" );
         result.back().setConditions( conditions );}
     }
 
