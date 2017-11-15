@@ -37,8 +37,7 @@ class GeneratorConditions {
 	{}
 
 	void	setCondition( const QString &param, const QString &value ) { mConditions[param] = value; }
-	// true if conditions contain 'key' and value is either the same or wildcard
-	bool	keyMatches( const QString &key, const QString &value ) const;
+	// true if 'this' contains a directly matching condition, no condition, or a wildcard condition for each condition in 'rhs'
 	bool	matches( const GeneratorConditions &rhs ) const;
 	// return value of "config" condition or empty string if not present
 	QString	getConfig() const;
