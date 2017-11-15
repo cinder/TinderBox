@@ -36,9 +36,9 @@ bool makePath( const QString &path );
 void copyDir( const QString &srcPath, const QString &dstPath, bool overwriteExisting );
 
 // Treats duplicate as a non-failure
-void copyFileOrDir( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents = false, const QString &replacePrefix = "",
-                    const QString &replaceProjDir = "", bool windowsLineEndings = false );
-void copyFile( QFileInfo src, QFileInfo dst, bool replaceContents, QString replacePrefix, QString replaceProjDir, bool windowsLineEndings );
+void copyFileOrDirHelper( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents = false, const QString &replacePrefix = "",
+					const QString &replaceProjDir = "", bool windowsLineEndings = false );
+void copyFileHelper( QFileInfo src, QFileInfo dst, bool replaceContents, QString replacePrefix, QString replaceProjDir, bool windowsLineEndings );
 
 std::string toWinPath( const std::string &path );
 

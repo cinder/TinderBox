@@ -35,8 +35,10 @@
 // Gathers list of files which needs to be copied, removes redundancies, and performs copy
 class Cloner {
   public:
+	void copyFileOrDir( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents = false, const QString &replacePrefix = "",
+						bool windowsLineEndings = false );
 	void copyFileOrDir( const GeneratorConditions &conditions, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents = false, const QString &replacePrefix = "",
-						const QString &replaceProjDir = "", bool windowsLineEndings = false );
+						bool windowsLineEndings = false );
 };
 
 class Instancer {
@@ -84,8 +86,8 @@ class Instancer {
 
 	bool			prepareGenerate();
 	void			writeResourcesHeader( const std::vector<GeneratorConditions> &conditions ) const;
-	void			copyAssets( const std::vector<GeneratorConditions> &conditions ) const;
-	void			copyBareFiles( const std::vector<GeneratorConditions> &conditions ) const;
+	void			copyAssets( const std::vector<GeneratorConditions> &conditions, Cloner *cloner ) const;
+	void			copyBareFiles( const std::vector<GeneratorConditions> &conditions, Cloner *cloner ) const;
 	QString         getRelCinderPath( const QString &relativeTo ) const;
 	bool			setupGitRepo( const QString &dirPath );
 	bool			initialCommitToGitRepo( const QString &dirPath );

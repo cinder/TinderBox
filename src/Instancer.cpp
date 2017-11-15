@@ -48,10 +48,16 @@ bool executeGitCommand( const QStringList &params )
 	#endif
 }
 
-void Cloner::copyFileOrDir( const GeneratorConditions &cond, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix,
-					const QString &replaceProjDir, bool windowsLineEndings )
+void Cloner::copyFileOrDir( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix,
+					bool windowsLineEndings )
 {
-	::copyFileOrDir( src, dst, overwriteExisting, replaceContents, replacePrefix, replaceProjDir, windowsLineEndings );
+	::copyFileOrDirHelper( src, dst, overwriteExisting, replaceContents, replacePrefix, "" /*replaceProjDir*/, windowsLineEndings );
+}
+
+void Cloner::copyFileOrDir( const GeneratorConditions &cond, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix,
+					bool windowsLineEndings )
+{
+	::copyFileOrDirHelper( src, dst, overwriteExisting, replaceContents, replacePrefix, "" /*replaceProjDir*/, windowsLineEndings );
 }
 
 Instancer::Instancer( const ProjectTemplate &projectTmpl )
@@ -108,11 +114,11 @@ void Instancer::instantiate( bool setupGit )
 		mChildTemplate->instantiateFilesMatchingConditions( copyConditions, true, &cloner );
 
 	// bare files (<file> tags) are not the responsibility of the project generators, so the Instancer does them here
-	copyBareFiles( copyConditions );
+	copyBareFiles( copyConditions, &cloner );
 
 	// assets are a special case; we have to copy them all locally since they can't be made relative to the project. Can only live in /assets/
 	// do this before we git add
-	copyAssets( copyConditions );
+	copyAssets( copyConditions, &cloner );
 
 	// setup git repo and possibly submodules
 	if( setupGit ) {
@@ -156,16 +162,16 @@ void Instancer::instantiate( bool setupGit )
 	}
 }
 
-void Instancer::copyBareFiles( const vector<GeneratorConditions> &conditions ) const
+void Instancer::copyBareFiles( const vector<GeneratorConditions> &conditions, Cloner *cloner ) const
 {
 	QList<Template::File> files = getFileTypeMatchingConditions<Template::File::FILE>( conditions, true );
 
 	for( QList<Template::File>::Iterator fileIt = files.begin(); fileIt != files.end(); ++fileIt ) {
-		copyFileOrDir( fileIt->getAbsoluteInputPath(), fileIt->getAbsoluteOutputPath(), true, fileIt->getReplaceContents(), getNamePrefix() );
+		cloner->copyFileOrDir( fileIt->getAbsoluteInputPath(), fileIt->getAbsoluteOutputPath(), true, fileIt->getReplaceContents(), getNamePrefix() );
 	}
 }
 
-void Instancer::copyAssets( const vector<GeneratorConditions> &conditions ) const
+void Instancer::copyAssets( const vector<GeneratorConditions> &conditions, Cloner *cloner ) const
 {
 	// create the assets directory if necessary
 	QDir assetDirPath( getOutputDir().absolutePath() + "/assets/" );
@@ -180,7 +186,7 @@ void Instancer::copyAssets( const vector<GeneratorConditions> &conditions ) cons
 		QString relOutputPath = assetIt->getRelativeInputPath();
 		if( relOutputPath.indexOf( "assets/") == 0 )
 			relOutputPath = relOutputPath.mid( QString("assets/").length() );
-		copyFileOrDir( assetIt->getAbsoluteInputPath(), assetDirPath.absoluteFilePath( relOutputPath ), true, assetIt->getReplaceContents(), getNamePrefix() );
+		cloner->copyFileOrDir( assetIt->getAbsoluteInputPath(), assetDirPath.absoluteFilePath( relOutputPath ), true, assetIt->getReplaceContents(), getNamePrefix() );
 	}
 }
 

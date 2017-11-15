@@ -121,7 +121,7 @@ void copyDir( const QString &srcPath, const QString &dstPath, bool overwriteExis
 	}
 }
 
-void copyFileOrDir( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix, const QString &replaceProjDir, bool windowsLineEndings )
+void copyFileOrDirHelper( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix, const QString &replaceProjDir, bool windowsLineEndings )
 {
 	// test immediately for the destination already existing. Remove it if we should
 	bool dstExists = dst.exists();
@@ -139,11 +139,11 @@ void copyFileOrDir( QFileInfo src, QFileInfo dst, bool overwriteExisting, bool r
 	if( src.isDir() )
 		copyDir( srcPath, dstPath, overwriteExisting );
 	else if( ( ! dstExists ) || overwriteExisting )
-        copyFile( QFileInfo( srcPath ), QFileInfo( dstPath ), replaceContents, replacePrefix, replaceProjDir, windowsLineEndings );
+		copyFileHelper( QFileInfo( srcPath ), QFileInfo( dstPath ), replaceContents, replacePrefix, replaceProjDir, windowsLineEndings );
 }
 
-void copyFile( QFileInfo src, QFileInfo dst, bool replaceContents, QString replacePrefix,
-               QString replaceProjDir, bool windowsLineEndings )
+void copyFileHelper( QFileInfo src, QFileInfo dst, bool replaceContents, QString replacePrefix,
+			   QString replaceProjDir, bool windowsLineEndings )
 {
 	QString dstPath;
 	QString srcPath = src.absoluteFilePath();
