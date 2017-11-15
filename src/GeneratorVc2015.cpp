@@ -36,11 +36,6 @@ GeneratorConditions GeneratorVc2015::getBaseConditions() const
 	return GeneratorConditions( conditions );
 }
 
-QString GeneratorVc2015::getCompiler() const
-{
-	return QString( "120" );
-}
-
 VcProjRef GeneratorVc2015::createVcProj( const QString &VcProj, const QString &VcProjFilters )
 {
     return Vc2015Proj::createFromString( VcProj, VcProjFilters );

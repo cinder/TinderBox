@@ -38,7 +38,6 @@ class GeneratorVcBase : public GeneratorBase {
 
 	virtual std::vector<GeneratorConditions>			getConditions() const;
 	virtual GeneratorConditions							getBaseConditions() const = 0;
-	virtual QString                                     getCompiler() const = 0;
 	virtual std::vector<VcProj::ProjectConfiguration>	getPlatformConfigurations() const = 0;
 	virtual bool                                        getSlnDeploy() const = 0;
 	virtual bool                                        getUseRcFile() const = 0;

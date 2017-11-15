@@ -46,9 +46,7 @@ class GeneratorVc2015WinRt : public GeneratorVcBase {
 		bool		mEnableWin32, mEnableX64, mEnableArm;
 	};
 
-
 	virtual GeneratorConditions							getBaseConditions() const;
-    virtual QString                                     getCompiler() const;
     virtual std::vector<VcProj::ProjectConfiguration>	getPlatformConfigurations() const override;
     virtual bool                                        getSlnDeploy() const;
     virtual bool                                        getUseRcFile() const { return false; }
