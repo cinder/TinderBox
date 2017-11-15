@@ -36,7 +36,7 @@ class GeneratorVcBase : public GeneratorBase {
   public:
 	GeneratorVcBase( const QString &foundationName );
 
-	virtual std::vector<GeneratorConditions>			getConditions() const = 0;
+	virtual std::vector<GeneratorConditions>			getConditions() const;
 	virtual GeneratorConditions							getBaseConditions() const = 0;
 	virtual QString                                     getCompiler() const = 0;
 	virtual std::vector<VcProj::ProjectConfiguration>	getPlatformConfigurations() const = 0;

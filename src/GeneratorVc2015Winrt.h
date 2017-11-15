@@ -47,7 +47,7 @@ class GeneratorVc2015WinRt : public GeneratorVcBase {
 	};
 
 
-    virtual QMap<QString,QString>                       getConditions() const;
+	virtual GeneratorConditions							getBaseConditions() const;
     virtual QString                                     getCompiler() const;
     virtual std::vector<VcProj::ProjectConfiguration>	getPlatformConfigurations() const override;
     virtual bool                                        getSlnDeploy() const;

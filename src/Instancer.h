@@ -30,10 +30,12 @@
 #include "GeneratorBase.h"
 #include "CinderBlock.h"
 #include "Template.h"
+#include "ProjectTemplate.h"
 
 // Gathers list of files which needs to be copied, removes redundancies, and performs copy
 class Cloner {
-	void copyFileOrDir( GeneratorConditions &conditions, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents = false, const QString &replacePrefix = "",
+  public:
+	void copyFileOrDir( const GeneratorConditions &conditions, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents = false, const QString &replacePrefix = "",
 						const QString &replaceProjDir = "", bool windowsLineEndings = false );
 };
 
@@ -41,16 +43,16 @@ class Instancer {
   public:
     Instancer( const ProjectTemplate &projectTmpl );
 
-	QList<Template::File>			 getFilesMatchingConditions( const GeneratorConditions &conditions ) const;
-	QList<Template::File>			 getResourcesMatchingConditions( const QList<QMap<QString,QString> > &conditions ) const;
-	QList<Template::IncludePath>	 getIncludePathsMatchingConditions( const GeneratorConditions &conditions ) const;
-	QList<Template::LibraryPath>	 getLibraryPathsMatchingConditions( const GeneratorConditions &conditions ) const;
-	QList<Template::FrameworkPath>	 getFrameworkPathsMatchingConditions( const GeneratorConditions &conditions ) const;
-	QList<Template::StaticLibrary>	 getStaticLibrariesMatchingConditions( const GeneratorConditions &conditions ) const;
-	QList<Template::DynamicLibrary>	 getDynamicLibrariesMatchingConditions( const GeneratorConditions &conditions ) const;
-	QList<Template::BuildSetting>	 getBuildSettingsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::File>				getFilesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::File>				getResourcesMatchingConditions( const std::vector<GeneratorConditions> &conditions ) const;
+	QList<Template::IncludePath>		getIncludePathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::LibraryPath>		getLibraryPathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::FrameworkPath>		getFrameworkPathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::StaticLibrary>		getStaticLibrariesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::DynamicLibrary>		getDynamicLibrariesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::BuildSetting>		getBuildSettingsMatchingConditions( const GeneratorConditions &conditions ) const;
 	QList<Template::PreprocessorDefine> getPreprocessorDefinesMatchingConditions( const GeneratorConditions &conditions ) const;
-	QList<Template::OutputExtension> getOutputExtensionsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<Template::OutputExtension>	getOutputExtensionsMatchingConditions( const GeneratorConditions &conditions ) const;
 
 	// takes ownership of childGen
 	void			addGenerator( GeneratorBase *childGen );
@@ -78,12 +80,12 @@ class Instancer {
 
   private:
 	template<Template::File::Type FILE_TYPE>
-	QList<Template::File> getFileTypeMatchingConditions( const QList<QMap<QString,QString> > &conditions, bool getCopyOnly ) const;
+	QList<Template::File> getFileTypeMatchingConditions( const std::vector<GeneratorConditions> &copyConditions, bool getCopyOnly ) const;
 
 	bool			prepareGenerate();
-	void			writeResourcesHeader( const QList<QMap<QString,QString> > &conditions ) const;
-	void			copyAssets( const QList<QMap<QString,QString> > &conditions ) const;
-	void			copyBareFiles( const QList<QMap<QString,QString> > &conditions ) const;
+	void			writeResourcesHeader( const std::vector<GeneratorConditions> &conditions ) const;
+	void			copyAssets( const std::vector<GeneratorConditions> &conditions ) const;
+	void			copyBareFiles( const std::vector<GeneratorConditions> &conditions ) const;
 	QString         getRelCinderPath( const QString &relativeTo ) const;
 	bool			setupGitRepo( const QString &dirPath );
 	bool			initialCommitToGitRepo( const QString &dirPath );

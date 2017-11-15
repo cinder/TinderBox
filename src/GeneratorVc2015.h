@@ -47,7 +47,6 @@ class GeneratorVc2015 : public GeneratorVcBase {
 		bool		mEnableWin32, mEnableX64, mEnableDesktopGl, mEnableAngle;
 	};
 
-	virtual std::vector<GeneratorConditions>	getConditions() const;
 	GeneratorConditions							getBaseConditions() const;
 	virtual QString                             getCompiler() const;
 	std::vector<VcProj::ProjectConfiguration>	getPlatformConfigurations() const override;

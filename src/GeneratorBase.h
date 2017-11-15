@@ -24,7 +24,6 @@
 #pragma once
 
 #include "TinderBox.h"
-#include "ProjectTemplate.h"
 
 #include <QDir>
 
@@ -39,13 +38,12 @@ class GeneratorConditions {
 
 	void	setCondition( const QString &param, const QString &value ) { mConditions[param] = value; }
 	// true if conditions contain 'key' and value is either the same or wildcard
-	bool	keyMatches( const QString &key, const QString &value ) const {
-		return mConditions.contains( key ) && ( mConditions[key] == value || mConditions[key] == "*" );
-	}
-	QString	getConfig() const {
-		return mConditions.contains( "config" ) ? mConditions["config"] : QString();
-	}
+	bool	keyMatches( const QString &key, const QString &value ) const;
+	bool	matches( const GeneratorConditions &rhs ) const;
+	// return value of "config" condition or empty string if not present
+	QString	getConfig() const;
 
+  private:
 	// map from condition to value, such as "compiler" -> "vc2015"
 	QMap<QString,QString>   mConditions;
 };

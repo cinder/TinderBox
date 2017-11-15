@@ -29,9 +29,11 @@
 
 #include "TinderBox.h"
 #include "ErrorList.h"
+#include "GeneratorBase.h"
 
-class GeneratorConditions;
+class Cloner;
 
+// Base class to both CinderBlock and ProjectTemplate
 class Template {
   public:
     class File;
@@ -41,7 +43,7 @@ class Template {
       public:
 		virtual ~Item() {}
 
-		Item( const QString &parentPath, const QString &inputPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions );
+		Item( const QString &parentPath, const QString &inputPath, const pugi::xml_node &dom, const GeneratorConditions &conditions );
 
 		bool		conditionsMatch( const GeneratorConditions &conditions ) const;
 		
@@ -62,7 +64,7 @@ class Template {
 		// Should the instancer copy this file?
 		bool			shouldCopy() const { return ( ! mOutputIsAbsolute ) && ( ! mOutputIsCinderRelative ); }
 
-        virtual void	setOutputPath( const QString &outputPath, const QString &/*replaceName*/, const QString &cinderPath );
+		virtual void	setOutputPath( const QString &outputPath, const QString &/*replaceName*/, const QString &cinderPath );
 
 		bool			operator==( const Item &rhs ) const { return
 			mInputRelativePath == rhs.mInputRelativePath && mInputAbsolutePath == rhs.mInputAbsolutePath &&
@@ -74,7 +76,7 @@ class Template {
 	  protected:
 		QString			getOutputPathRelativeTo( const QString &relativeTo, const QString &cinderPath ) const;
 
-		QMap<QString,QString>		mConditions;
+		GeneratorConditions			mConditions;
 		QString						mInputAbsolutePath;
 		QString						mInputRelativePath;
 		QString						mOutputAbsolutePath;
@@ -88,7 +90,7 @@ class Template {
 	  public:
 		typedef enum { SOURCE, HEADER, RESOURCE, ASSET, FRAMEWORK, DIRECTORY, BUILD_COPY, FILE } Type;
 	  
-		File( const QString &parentPath, const QString &inputPath, const pugi::xml_node &dom, Type type, const QMap<QString,QString> &conditions, ErrorList *errors );
+		File( const QString &parentPath, const QString &inputPath, const pugi::xml_node &dom, Type type, const GeneratorConditions &conditions, ErrorList *errors );
 
       public:
 		File::Type		getType() const { return mType; }
@@ -113,8 +115,8 @@ class Template {
 		// build-copy-specific
 		QString			getBuildCopyDestination() const { return mBuildCopyDestination; }
 
-        virtual void	setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath, const QString &replaceProjDir );
-        QString			getMacOutputPath( const QString &outputPath, const QString &replacePrefix, const QString &cinderPath, const QString &replaceProjDir ) const;
+		virtual void	setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath );
+		QString			getMacOutputPath( const QString &outputPath, const QString &replacePrefix, const QString &cinderPath ) const;
 
 	  protected:
 		Type			mType;	  
@@ -133,7 +135,7 @@ class Template {
 
 	class IncludePath : public Item {
 	  public:
-		IncludePath( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors );
+		IncludePath( const QString &parentPath, const pugi::xml_node &dom, const GeneratorConditions &conditions, ErrorList *errors );
 		
 		bool	isSystem() const { return mSystem; }
 		
@@ -144,27 +146,27 @@ class Template {
 
 	class LibraryPath : public Item {
 	  public:
-		LibraryPath( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors );
+		LibraryPath( const QString &parentPath, const pugi::xml_node &dom, const GeneratorConditions &conditions, ErrorList *errors );
 	};
 
 	class FrameworkPath : public Item {
 	  public:
-		FrameworkPath( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors );
+		FrameworkPath( const QString &parentPath, const pugi::xml_node &dom, const GeneratorConditions &conditions, ErrorList *errors );
 	};
 	
 	class StaticLibrary : public Item {
 	  public:
-		StaticLibrary( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors );		
+		StaticLibrary( const QString &parentPath, const pugi::xml_node &dom, const GeneratorConditions &conditions, ErrorList *errors );
 	};
 
 	class DynamicLibrary : public Item {
 	  public:
-		DynamicLibrary( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors );
+		DynamicLibrary( const QString &parentPath, const pugi::xml_node &dom, const GeneratorConditions &conditions, ErrorList *errors );
 	};
 
 	class BuildSetting : public Item {
 	  public:
-		BuildSetting( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors );
+		BuildSetting( const QString &parentPath, const pugi::xml_node &dom, const GeneratorConditions &conditions, ErrorList *errors );
 		
 		QString		getKey() const { return mKey; }
 		QString		getValue() const { return mValue; }
@@ -174,7 +176,7 @@ class Template {
 
 	class PreprocessorDefine : public Item {
 	  public:
-		PreprocessorDefine( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors );
+		PreprocessorDefine( const QString &parentPath, const pugi::xml_node &dom, const GeneratorConditions &conditions, ErrorList *errors );
 
 		QString		getValue() const { return mValue; }
 
@@ -183,7 +185,7 @@ class Template {
 
 	class OutputExtension : public Item {
 	  public:
-		OutputExtension( const QString &parentPath, const pugi::xml_node &dom, const QMap<QString,QString> &conditions, ErrorList *errors );
+		OutputExtension( const QString &parentPath, const pugi::xml_node &dom, const GeneratorConditions &conditions, ErrorList *errors );
 
 		QString		getValue() const { return mValue; }
 
@@ -202,36 +204,36 @@ class Template {
 	const QList<QString>&	getRequires() const { return mRequires; }
 
 	// for copy submodule type
-    void			setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath, const QString &replaceProjDir );
+	void			setOutputPath( const QString &outputPath, const QString &replaceName, const QString &cinderPath );
 	// for relative/submodule type; output == input
 	void			setOutputPathToInput();
 	// prepends 'virtualPath' to all items' virtual paths
 	void			setupVirtualPaths( const QString &virtualPath );
 
-	bool			supportsConditions( const QMap<QString,QString> &conditions ) const;
+	bool			supportsConditions( const GeneratorConditions &conditions ) const;
 	bool			isCore() const { return mCore; }
 
-	void			instantiateFilesMatchingConditions( const QList<QMap<QString,QString> > &conditionsList, bool overwriteExisting ) const;
-	QList<File>		getFilesMatchingConditions( const QList<QMap<QString,QString> > &conditionsList ) const;
-	QList<File>		getFilesMatchingConditions( const QMap<QString,QString> &conditions ) const;
+	void			instantiateFilesMatchingConditions( const std::vector<GeneratorConditions> &conditionsList, bool overwriteExisting, Cloner *cloner ) const;
+	QList<File>		getFilesMatchingConditions( const std::vector<GeneratorConditions> &conditionsList ) const;
+	QList<File>		getFilesMatchingConditions( const GeneratorConditions &conditions ) const;
 
-	QList<IncludePath>		getIncludePathsMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<LibraryPath>		getLibraryPathsMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<FrameworkPath>	getFrameworkPathsMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<StaticLibrary>	getStaticLibrariesMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<DynamicLibrary>	getDynamicLibrariesMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<BuildSetting>		getBuildSettingsMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<PreprocessorDefine>	getPreprocessorDefinesMatchingConditions( const QMap<QString,QString> &conditions ) const;
-	QList<OutputExtension>	getOutputExtensionsMatchingConditions( const QMap<QString,QString> &conditions ) const;
+	QList<IncludePath>		getIncludePathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<LibraryPath>		getLibraryPathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<FrameworkPath>	getFrameworkPathsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<StaticLibrary>	getStaticLibrariesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<DynamicLibrary>	getDynamicLibrariesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<BuildSetting>		getBuildSettingsMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<PreprocessorDefine>	getPreprocessorDefinesMatchingConditions( const GeneratorConditions &conditions ) const;
+	QList<OutputExtension>	getOutputExtensionsMatchingConditions( const GeneratorConditions &conditions ) const;
 
 	QString			getOutputPath() const { return mOutputPath; }
 	QString			getParentPath() const { return mParentPath; }
 
   protected:
-	void		processFilePattern( const QString &parentPath, const pugi::xml_node &dom, File::Type type, const QMap<QString,QString> &conditions, ErrorList *errors );
+	void		processFilePattern( const QString &parentPath, const pugi::xml_node &dom, File::Type type, const GeneratorConditions &conditions, ErrorList *errors );
 	template<typename T>
-	QList<T>	getItemsMatchingConditions( const QList<T> &list, const QMap<QString,QString> &conditions ) const;
-	void		parseGroup( const pugi::xml_node &node, QMap<QString,QString> conditions, ErrorList *errors );
+	QList<T>	getItemsMatchingConditions( const QList<T> &list, const GeneratorConditions &conditions ) const;
+	void		parseGroup( const pugi::xml_node &node, GeneratorConditions conditions, ErrorList *errors );
 	void		parseSupports( const pugi::xml_node &node, ErrorList *errors );
 
 	QString					mParentPath;
@@ -248,9 +250,9 @@ class Template {
 	QList<PreprocessorDefine>	mPreprocessorDefines;
 	QList<OutputExtension>		mOutputExtensions;
 
-	bool							mCore;
-	QList<QString>					mRequires;
-	QList<QMap<QString,QString> >	mSupports;
+	bool								mCore;
+	QList<QString>						mRequires;
+	std::vector<GeneratorConditions>	mSupports;
 };
 
 typedef QSharedPointer<Template> TemplateRef;

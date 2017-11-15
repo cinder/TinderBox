@@ -28,7 +28,7 @@
 
 #include <fstream>
 
-GeneratorConditions GeneratorVc2015WinRt::getConditions() const
+GeneratorConditions GeneratorVc2015WinRt::getBaseConditions() const
 {
 	QMap<QString,QString> conditions;
     conditions["compiler"] = "vc2015";
@@ -52,31 +52,31 @@ std::vector<VcProj::ProjectConfiguration> GeneratorVc2015WinRt::getPlatformConfi
 
 	if( mOptions.mEnableWin32 ) {
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "Win32" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "debug";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "i386" ); conditions.setCondition( "config", "debug" );
 		result.back().setConditions( conditions );}
 
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "Win32" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "i386"; conditions["config"] = "release";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "i386" ); conditions.setCondition( "config", "release");
 		result.back().setConditions( conditions );}
 	}
 
 	if( mOptions.mEnableX64 ) {
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "x64" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "debug";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "x86_64" ); conditions.setCondition( "config", "debug" );
 		result.back().setConditions( conditions );}
 
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "x64" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "x86_64"; conditions["config"] = "release";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "x86_64" ); conditions.setCondition( "config", "release" );
 		result.back().setConditions( conditions );}
 	}
 
 	if( mOptions.mEnableArm ) {
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Debug" ), QString::fromUtf8( "ARM" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "ARM"; conditions["config"] = "debug";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "ARM" ); conditions.setCondition( "config", "debug" );
 		result.back().setConditions( conditions );}
 
 		result.push_back( VcProj::ProjectConfiguration( QString::fromUtf8( "Release" ), QString::fromUtf8( "x64" ) ) );
-		{auto conditions = getConditions(); conditions["arch"] = "ARM"; conditions["config"] = "ARM";
+		{auto conditions = getBaseConditions(); conditions.setCondition( "arch", "ARM" ); conditions.setCondition( "config", "ARM" );
 		result.back().setConditions( conditions );}
 	}
 

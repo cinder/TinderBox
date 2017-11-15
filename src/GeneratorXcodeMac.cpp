@@ -23,18 +23,26 @@
 
 #include "GeneratorXcodeMac.h"
 
+using namespace std;
+
 GeneratorXcodeMac::GeneratorXcodeMac()
 	: GeneratorXcodeBase()
 {
 	mSdks.push_back( QString() );
 }
 
-GeneratorConditions GeneratorXcodeMac::getConditions() const
+GeneratorConditions	GeneratorXcodeMac::getBaseConditions() const
+{
+	GeneratorConditions result;
+	result.setCondition( "compiler", "xcode" );
+	result.setCondition( "os", "macosx" );
+	return result;
+}
+
+vector<GeneratorConditions> GeneratorXcodeMac::getConditions() const
 {
 	std::vector<GeneratorConditions> result;
-	GeneratorConditions baseConditions;
-	baseConditions.setCondition( "compiler", "xcode" );
-	baseConditions.setCondition( "os", "macosx" );
+	GeneratorConditions baseConditions = getBaseConditions();
 
 	auto debug = baseConditions;
 	debug.setCondition( "config", "debug" );

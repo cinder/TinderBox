@@ -53,7 +53,8 @@ SOURCES += \
     src/parse/XCodeProj.cpp \
     src/pugixml/pugixml.cpp \
     src/WizardPageEnvOptions.cpp \
-    src/GeneratorVc2015Winrt.cpp
+    src/GeneratorVc2015Winrt.cpp \
+    src/GeneratorBase.cpp
 
 HEADERS  += \
     src/CinderBlock.h \

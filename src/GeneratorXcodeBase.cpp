@@ -8,6 +8,8 @@
 #include <iostream>
 #include <fstream>
 
+using namespace std;
+
 QString realXcodeSdkName( const QString &templateXmlName )
 {
 	if( templateXmlName == "device" )
@@ -182,8 +184,9 @@ void GeneratorXcodeBase::setupOutputExtension( XCodeProjRef xcodeProj, Instancer
 
 void GeneratorXcodeBase::generate( Instancer *master )
 {
-	std::vector<GeneratorConditions> conditions = getConditions();
-    QList<Template::File> files = master->getFilesMatchingConditions( conditions );
+	QList<Template::File> files = master->getFilesMatchingConditions( getBaseConditions() );
+
+	vector<GeneratorConditions> conditions = getConditions();
 
 	// setup output paths of the project itself, and create its parent "xcode" directory
     QString xcodeAbsPath = master->createDirectory( "proj/" + getRootFolderName() );
@@ -225,17 +228,11 @@ void GeneratorXcodeBase::generate( Instancer *master )
 									 fileIt->isOutputAbsolute(), fileIt->isOutputSdkRelative(), fileIt->getBuildCopyDestination() );
 	}
 
-	// build settings
-	setupBuildSettings( xcodeProj, master, debugConditions, "Debug" );
-	setupBuildSettings( xcodeProj, master, releaseConditions, "Release" );
-
-	// preprocessor defines
-	setupPreprocessorDefines( xcodeProj, master, debugConditions, "Debug" );
-	setupPreprocessorDefines( xcodeProj, master, releaseConditions, "Release" );
-
-	// output extension
-	setupOutputExtension( xcodeProj, master, debugConditions, "Debug" );
-	setupOutputExtension( xcodeProj, master, releaseConditions, "Release" );
+	for( auto condIt = conditions.begin(); condIt != conditions.end(); ++condIt ) {
+		setupBuildSettings( xcodeProj, master, *condIt );
+		setupPreprocessorDefines( xcodeProj, master, *condIt );
+		setupOutputExtension( xcodeProj, master, *condIt );
+	}
 
     // write to disk
     QString pbxprojPath = master->getAbsolutePath( xcodeprojRelPath + "/project.pbxproj" );

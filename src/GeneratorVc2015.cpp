@@ -28,16 +28,6 @@
 
 #include <fstream>
 
-std::vector<GeneratorConditions> GeneratorVc2015::getConditions() const
-{
-	std::vector<GeneratorConditions> result;
-	std::vector<VcProj::ProjectConfiguration> platformConfigs = getPlatformConfigurations();
-	for( std::vector<VcProj::ProjectConfiguration>::const_iterator platformConfig = platformConfigs.begin(); platformConfig != platformConfigs.end(); ++platformConfig )
-		result.push_back( platformConfig->getConditions() );
-
-	return result;
-}
-
 GeneratorConditions GeneratorVc2015::getBaseConditions() const
 {
 	QMap<QString,QString> conditions;

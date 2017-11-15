@@ -33,20 +33,22 @@
 #include <iostream>
 #include <QProcess>
 
+using namespace std;
+
 bool executeGitCommand( const QStringList &params )
 {
-std::cout << "Git: ";
-for( QStringList::ConstIterator sIt = params.begin(); sIt != params.end(); ++sIt )
-	std::cout << sIt->toStdString() << " ";
-std::cout << std::endl;
-#ifdef Q_OS_MAC
-	return QProcess::execute( Preferences::getGitPath(), params ) == 0;
-#else
-	return QProcess::execute( "cmd", QStringList() << "/c" << "git" << params ) == 0;
-#endif
+	std::cout << "Git: ";
+	for( QStringList::ConstIterator sIt = params.begin(); sIt != params.end(); ++sIt )
+		std::cout << sIt->toStdString() << " ";
+	std::cout << std::endl;
+	#ifdef Q_OS_MAC
+		return QProcess::execute( Preferences::getGitPath(), params ) == 0;
+	#else
+		return QProcess::execute( "cmd", QStringList() << "/c" << "git" << params ) == 0;
+	#endif
 }
 
-void Cloner::copyFileOrDir( GeneratorConditions &cond, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix,
+void Cloner::copyFileOrDir( const GeneratorConditions &cond, QFileInfo src, QFileInfo dst, bool overwriteExisting, bool replaceContents, const QString &replacePrefix,
 					const QString &replaceProjDir, bool windowsLineEndings )
 {
 	::copyFileOrDir( src, dst, overwriteExisting, replaceContents, replacePrefix, replaceProjDir, windowsLineEndings );
@@ -64,10 +66,12 @@ Instancer::Instancer( const ProjectTemplate &projectTmpl )
 
 void Instancer::instantiate( bool setupGit )
 {
+	Cloner cloner;
+
 	if( ! prepareGenerate() )
 		return;
 
-	std::vector<GeneratorConditions> copyConditions;
+	vector<GeneratorConditions> copyConditions;
 	for( QList<GeneratorBaseRef>::Iterator childIt = mChildGenerators.begin(); childIt != mChildGenerators.end(); ++childIt ) {
 		auto childConds = (*childIt)->getConditions();
 		copyConditions.insert( copyConditions.end(), childConds.begin(), childConds.end() );
@@ -94,21 +98,21 @@ void Instancer::instantiate( bool setupGit )
 	// copy any cinderblocks' files
 	for( QList<CinderBlockRef>::Iterator blockIt = mCinderBlocks.begin(); blockIt != mCinderBlocks.end(); ++blockIt ) {
 		if( (*blockIt)->getInstallType() == CinderBlock::INSTALL_COPY )
-			(*blockIt)->instantiateFilesMatchingConditions( conditions, false );
+			(*blockIt)->instantiateFilesMatchingConditions( copyConditions, false, &cloner );
 	}
 
     // get all files which match our generators as well as the empty set of conditions
-	mProjectTmpl.instantiateFilesMatchingConditions( conditions, false );
+	mProjectTmpl.instantiateFilesMatchingConditions( copyConditions, false, &cloner );
 
 	if( mChildTemplate )
-		mChildTemplate->instantiateFilesMatchingConditions( conditions, true );
+		mChildTemplate->instantiateFilesMatchingConditions( copyConditions, true, &cloner );
 
-	// bare files (<file> tags) are not the responsibility of the project generators, so the Instancer does 'em here
-	copyBareFiles( conditions );
+	// bare files (<file> tags) are not the responsibility of the project generators, so the Instancer does them here
+	copyBareFiles( copyConditions );
 
 	// assets are a special case; we have to copy them all locally since they can't be made relative to the project. Can only live in /assets/
 	// do this before we git add
-	copyAssets( conditions );
+	copyAssets( copyConditions );
 
 	// setup git repo and possibly submodules
 	if( setupGit ) {
@@ -145,14 +149,14 @@ void Instancer::instantiate( bool setupGit )
 		(*childIt)->generate( this );
 
 	// create Resources.h
-	writeResourcesHeader( conditions );
+	writeResourcesHeader( copyConditions );
 
 	if( setupGit ) { // now add it all to the master
 		initialCommitToGitRepo( getOutputDir().absolutePath() );
 	}
 }
 
-void Instancer::copyBareFiles( const QList<QMap<QString,QString> > &conditions ) const
+void Instancer::copyBareFiles( const vector<GeneratorConditions> &conditions ) const
 {
 	QList<Template::File> files = getFileTypeMatchingConditions<Template::File::FILE>( conditions, true );
 
@@ -161,7 +165,7 @@ void Instancer::copyBareFiles( const QList<QMap<QString,QString> > &conditions )
 	}
 }
 
-void Instancer::copyAssets( const QList<QMap<QString,QString> > &conditions ) const
+void Instancer::copyAssets( const vector<GeneratorConditions> &conditions ) const
 {
 	// create the assets directory if necessary
 	QDir assetDirPath( getOutputDir().absolutePath() + "/assets/" );
@@ -180,7 +184,7 @@ void Instancer::copyAssets( const QList<QMap<QString,QString> > &conditions ) co
 	}
 }
 
-void Instancer::writeResourcesHeader( const QList<QMap<QString,QString> > &conditions ) const
+void Instancer::writeResourcesHeader( const vector<GeneratorConditions> &conditions ) const
 {
 	QDir includePath( getOutputDir().absolutePath() + "/include/" );
 	if( ! includePath.exists() ) {
@@ -248,13 +252,13 @@ void Instancer::writeResourcesHeader( const QList<QMap<QString,QString> > &condi
 
 // 'getCopyOnly' returns only the files of copied CinderBlocks; appropriate for <asset> and <file>
 template<Template::File::Type FILE_TYPE>
-QList<Template::File> Instancer::getFileTypeMatchingConditions( const QList<QMap<QString,QString> > &conditions, bool getCopyOnly ) const
+QList<Template::File> Instancer::getFileTypeMatchingConditions( const vector<GeneratorConditions> &copyConditions, bool getCopyOnly ) const
 {
 	QList<Template::File> allFiles;
 	
-	allFiles.append( mProjectTmpl.getFilesMatchingConditions( conditions ) );
+	allFiles.append( mProjectTmpl.getFilesMatchingConditions( copyConditions ) );
 	if( mChildTemplate ) {
-		QList<Template::File> childFiles = mChildTemplate->getFilesMatchingConditions( conditions );
+		QList<Template::File> childFiles = mChildTemplate->getFilesMatchingConditions( copyConditions );
 		// iterate any files we received from the master template and override them with any equivalents from the child template
 		for( QList<Template::File>::ConstIterator childFile = childFiles.begin(); childFile != childFiles.end(); ++childFile ) {
 			for( QList<Template::File>::Iterator testFile = allFiles.begin(); testFile != allFiles.end(); ++testFile ) {
@@ -267,12 +271,13 @@ QList<Template::File> Instancer::getFileTypeMatchingConditions( const QList<QMap
 		allFiles.append( childFiles );
 	}
 	
+	// iterate blocks
 	for( QList<CinderBlockRef>::ConstIterator blockIt = mCinderBlocks.begin(); blockIt != mCinderBlocks.end(); ++blockIt ) {
 		if( getCopyOnly && ( (*blockIt)->getInstallType() != CinderBlock::INSTALL_COPY ) )
 			continue;
-		for( QList<QMap<QString,QString> >::ConstIterator condIt = conditions.begin(); condIt != conditions.end(); ++condIt ) {
+		for( auto condIt = copyConditions.begin(); condIt != copyConditions.end(); ++condIt ) {
 			if( (*blockIt)->supportsConditions( *condIt ) ) {
-				allFiles.append( (*blockIt)->getFilesMatchingConditions( conditions ) );
+				allFiles.append( (*blockIt)->getFilesMatchingConditions( *condIt ) );
 				break;
 			}
 		}
@@ -287,7 +292,7 @@ QList<Template::File> Instancer::getFileTypeMatchingConditions( const QList<QMap
 	return result;
 }
 
-QList<Template::File> Instancer::getResourcesMatchingConditions( const QList<QMap<QString,QString> > &conditions ) const
+QList<Template::File> Instancer::getResourcesMatchingConditions( const vector<GeneratorConditions> &conditions ) const
 {
 	return getFileTypeMatchingConditions<Template::File::RESOURCE>( conditions, false );
 }

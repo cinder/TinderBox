@@ -255,7 +255,7 @@ void MainWizard::generateProject()
 		instancer.instantiate( mWizardPageMain->shouldCreateGitRepo() );
 
 		// open the Finder / Explorer at the path we just created
-		QString localPath = joinPath( gen.getBaseLocation(), gen.getProjectName() );
+		QString localPath = joinPath( instancer.getBaseLocation(), instancer.getProjectName() );
 #if defined Q_OS_MACX
 		if( QFileInfo( localPath + "/xcode" ).exists() )
 			localPath = joinPath( localPath, "xcode" );

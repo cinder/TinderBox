@@ -30,8 +30,9 @@ class GeneratorXcodeMac : public GeneratorXcodeBase
   public:
 	GeneratorXcodeMac();
 
-	GeneratorConditions		getConditions() const;
-	QString					getRootFolderName() const { return QString::fromUtf8( "xcode" ); }
+	GeneratorConditions					getBaseConditions() const;
+	std::vector<GeneratorConditions>	getConditions() const override;
+	QString								getRootFolderName() const { return QString::fromUtf8( "xcode" ); }
 	
 	virtual QList<QString>			getSdks() const { return mSdks; }
 	

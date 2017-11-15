@@ -28,6 +28,18 @@
 
 #include <fstream>
 
+using namespace std;
+
+std::vector<GeneratorConditions> GeneratorVcBase::getConditions() const
+{
+	std::vector<GeneratorConditions> result;
+	std::vector<VcProj::ProjectConfiguration> platformConfigs = getPlatformConfigurations();
+	for( std::vector<VcProj::ProjectConfiguration>::const_iterator platformConfig = platformConfigs.begin(); platformConfig != platformConfigs.end(); ++platformConfig )
+		result.push_back( platformConfig->getConditions() );
+
+	return result;
+}
+
 GeneratorVcBase::GeneratorVcBase( const QString &foundationName )
 	: mFoundationName( foundationName )
 {
@@ -57,10 +69,9 @@ void GeneratorVcBase::setupPreprocessorDefines( VcProjRef proj, Instancer *insta
 void GeneratorVcBase::generate( Instancer *instancer )
 {
 	GeneratorConditions conditions = getBaseConditions();
-	conditions.setCondition( "config", "*" );
 	QList<Template::File> files = instancer->getFilesMatchingConditions( conditions );
 
-	auto projectConfigurations = getPlatformConfigurations();
+	auto platformConfigurations = getPlatformConfigurations();
 
 	QString absDirPath = instancer->createDirectory( mFoundationName );
 	QString cinderPath = instancer->getWinRelCinderPath( absDirPath );
@@ -74,7 +85,7 @@ void GeneratorVcBase::generate( Instancer *instancer )
     VcProjRef vcProj = createVcProj( replacedVcproj, replacedVcprojFilters );
 	vcProj->setupNew( instancer->getNamePrefix(), getPlatformConfigurations(), getSlnDeploy(), getUseRcFile() );
 
-	for( const auto &config : projectConfigurations ) {
+	for( const auto &config : platformConfigurations ) {
 		QList<Template::OutputExtension> outExtensions = instancer->getOutputExtensionsMatchingConditions( config.getConditions() );
 		if( ! outExtensions.empty() )
 			vcProj->setTargetExtension( config, outExtensions.first().getValue() );
@@ -100,7 +111,7 @@ void GeneratorVcBase::generate( Instancer *instancer )
 		else if( fileIt->getType() == Template::File::RESOURCE )
 			vcProj->addResourceFile( fileIt->getResourceName(), fileIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ), fileIt->getResourceType(), fileIt->getResourceId() );
 		else if( fileIt->getType() == Template::File::BUILD_COPY ) {
-			for( const auto &config : projectConfigurations ) {
+			for( const auto &config : platformConfigurations ) {
 				if( fileIt->conditionsMatch( config.getConditions() ) )
 					vcProj->addBuildCopy( config, fileIt->getWinOutputPathRelativeTo( absDirPath, cinderPath ) );
 			}

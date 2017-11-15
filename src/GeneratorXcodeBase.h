@@ -34,6 +34,7 @@
 
 class GeneratorXcodeBase : public GeneratorBase {
   public:
+	virtual GeneratorConditions					getBaseConditions() const = 0;
 	virtual std::vector<GeneratorConditions>	getConditions() const = 0;
 	virtual void								generate( Instancer *instancer );
 	virtual QString								getRootFolderName() const = 0;

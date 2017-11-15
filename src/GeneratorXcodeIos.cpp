@@ -23,6 +23,8 @@
 
 #include "GeneratorXcodeIos.h"
 
+using namespace std;
+
 GeneratorXcodeIos::GeneratorXcodeIos()
 	: GeneratorXcodeBase()
 {
@@ -30,11 +32,26 @@ GeneratorXcodeIos::GeneratorXcodeIos()
 	mSdks.push_back( QString("simulator") );
 }
 
-GeneratorConditions GeneratorXcodeIos::getConditions() const
+GeneratorConditions	GeneratorXcodeIos::getBaseConditions() const
 {
-    QMap<QString,QString> conditions;
-    conditions["compiler"] = "xcode";
-    conditions["os"] = "ios";
-    conditions["sdk"] = "*";
-	return GeneratorConditions( conditions );
+	GeneratorConditions result;
+	result.setCondition( "compiler", "xcode" );
+	result.setCondition( "os", "ios" );
+	return result;
+}
+
+vector<GeneratorConditions> GeneratorXcodeIos::getConditions() const
+{
+	std::vector<GeneratorConditions> result;
+	GeneratorConditions baseConditions = getBaseConditions();
+
+	auto debug = baseConditions;
+	debug.setCondition( "config", "debug" );
+	auto release = baseConditions;
+	release.setCondition( "config", "release" );
+
+	result.push_back( debug );
+	result.push_back( release );
+
+	return result;
 }

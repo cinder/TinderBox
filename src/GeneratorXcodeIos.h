@@ -30,7 +30,8 @@ class GeneratorXcodeIos : public GeneratorXcodeBase
   public:
 	GeneratorXcodeIos();
 
-	GeneratorConditions		getConditions() const;
+	GeneratorConditions					getBaseConditions() const;
+	std::vector<GeneratorConditions>	getConditions() const;
 	QString					getRootFolderName() const { return QString::fromUtf8( "xcode_ios" ); }
 
 	virtual QList<QString>			getSdks() const { return mSdks; }
