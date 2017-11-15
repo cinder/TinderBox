@@ -100,6 +100,6 @@ class Instancer {
 	QString         mBaseLocation;
 	QString         mAbsCinderPath;
 
-	QList<GeneratorBaseRef>		mChildGenerators;
+	QList<GeneratorBaseRef>		mGenerators;
 	QList<CinderBlockRef>		mCinderBlocks;
 };

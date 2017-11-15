@@ -78,7 +78,7 @@ void Instancer::instantiate( bool setupGit )
 		return;
 
 	vector<GeneratorConditions> copyConditions;
-	for( QList<GeneratorBaseRef>::Iterator childIt = mChildGenerators.begin(); childIt != mChildGenerators.end(); ++childIt ) {
+	for( QList<GeneratorBaseRef>::Iterator childIt = mGenerators.begin(); childIt != mGenerators.end(); ++childIt ) {
 		auto childConds = (*childIt)->getConditions();
 		copyConditions.insert( copyConditions.end(), childConds.begin(), childConds.end() );
 	}
@@ -151,7 +151,7 @@ void Instancer::instantiate( bool setupGit )
 	}
 
 	// walk the children and generate with each generator
-	for( QList<GeneratorBaseRef>::Iterator childIt = mChildGenerators.begin(); childIt != mChildGenerators.end(); ++childIt )
+	for( QList<GeneratorBaseRef>::Iterator childIt = mGenerators.begin(); childIt != mGenerators.end(); ++childIt )
 		(*childIt)->generate( this );
 
 	// create Resources.h
@@ -441,7 +441,7 @@ QList<Template::OutputExtension> Instancer::getOutputExtensionsMatchingCondition
 
 void Instancer::addGenerator( GeneratorBase *childGen )
 {
-	mChildGenerators.push_back( QSharedPointer<GeneratorBase>( childGen ) );
+	mGenerators.push_back( QSharedPointer<GeneratorBase>( childGen ) );
 }
 
 // Creates the destination directory, sets Cinder location
