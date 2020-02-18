@@ -15,6 +15,7 @@ INCLUDEPATH += src/ src/parse/
 
 macx {
     ICON = icons/TinderBox.icns
+    QMAKE_INFO_PLIST = resources/macosx/Info.plist
 }
 
 win32 {
