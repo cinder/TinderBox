@@ -41,9 +41,7 @@ public:
 
 	void	initializePage() override;
 
-	// VC 2015
-	bool	isVc2015Win32Selected() const;
-	bool	isVc2015X64Selected() const;
+	// VC 2019
 	bool	isVc2015DesktopGlSelected() const;
 	bool	isVc2015AngleSelected() const;
 

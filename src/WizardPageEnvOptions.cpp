@@ -32,8 +32,6 @@ WizardPageEnvOptions::WizardPageEnvOptions( MainWizard *parent ) :
     ui->setupUi(this);
 
 	// VC 2015
-	connect( ui->vc2015Win32CheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
-	connect( ui->vc2015X64CheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
 	connect( ui->vc2015OpenGlCheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
 	connect( ui->vc2015AngleCheckBox,SIGNAL(clicked(bool)),this,SLOT(updateNextButton(bool)) );
 
@@ -77,16 +75,6 @@ void WizardPageEnvOptions::recursiveEnable( QLayout *layout, bool enable )
 	}
 }
 
-bool WizardPageEnvOptions::isVc2015Win32Selected() const
-{
-	return ui->vc2015Win32CheckBox->isChecked();
-}
-
-bool WizardPageEnvOptions::isVc2015X64Selected() const
-{
-	return ui->vc2015X64CheckBox->isChecked();
-}
-
 bool WizardPageEnvOptions::isVc2015DesktopGlSelected() const
 {
 	return ui->vc2015OpenGlCheckBox->isChecked();
@@ -118,9 +106,8 @@ bool WizardPageEnvOptions::isVc2015WinRtArmSelected() const
 
 void WizardPageEnvOptions::updateNextButton( bool /*ignored*/ )
 {
-	bool vc2015PlatformChecked = isVc2015Win32Selected() || isVc2015X64Selected();
     bool vc2015RendererChecked = isVc2015DesktopGlSelected() || isVc2015AngleSelected();
-	bool vc2015Good = ( ! mVc2015Enabled ) || ( vc2015PlatformChecked && vc2015RendererChecked );
+	bool vc2015Good = ( ! mVc2015Enabled ) || ( vc2015RendererChecked );
 
 	bool vc2015WinRtPlatformChecked = isVc2015WinRtWin32Selected() || isVc2015WinRtX64Selected() || isVc2015WinRtArmSelected();
 	bool vc2015WinRtGood = ( ! mVc2015WinRtEnabled ) || vc2015WinRtPlatformChecked;

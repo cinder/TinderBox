@@ -21,14 +21,14 @@
  POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "GeneratorVc2015.h"
+#include "GeneratorVc2019.h"
 #include "ProjectTemplateManager.h"
 #include "Util.h"
 #include "Vc2015Proj.h"
 
 #include <fstream>
 
-GeneratorConditions GeneratorVc2015::getBaseConditions() const
+GeneratorConditions GeneratorVc2019::getBaseConditions() const
 {
 	QMap<QString,QString> conditions;
 	conditions["compiler"] = "vc2015";
@@ -36,12 +36,12 @@ GeneratorConditions GeneratorVc2015::getBaseConditions() const
 	return GeneratorConditions( conditions );
 }
 
-VcProjRef GeneratorVc2015::createVcProj( const QString &VcProj, const QString &VcProjFilters )
+VcProjRef GeneratorVc2019::createVcProj( const QString &VcProj, const QString &VcProjFilters )
 {
     return Vc2015Proj::createFromString( VcProj, VcProjFilters );
 }
 
-std::vector<VcProj::ProjectConfiguration> GeneratorVc2015::getPlatformConfigurations() const
+std::vector<VcProj::ProjectConfiguration> GeneratorVc2019::getPlatformConfigurations() const
 {
     std::vector<VcProj::ProjectConfiguration> result;
 
@@ -92,7 +92,7 @@ std::vector<VcProj::ProjectConfiguration> GeneratorVc2015::getPlatformConfigurat
 	return result;
 }
 
-bool GeneratorVc2015::getSlnDeploy() const
+bool GeneratorVc2019::getSlnDeploy() const
 {
 	return false;
 }

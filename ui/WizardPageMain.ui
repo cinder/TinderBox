@@ -364,7 +364,7 @@ background-color: red;
             </item>
             <item>
              <property name="text">
-              <string>VC 2015</string>
+              <string>VC 2019</string>
              </property>
              <property name="icon">
               <iconset>

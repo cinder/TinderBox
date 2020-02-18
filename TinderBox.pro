@@ -32,7 +32,6 @@ SOURCES += \
     src/CinderBlockManager.cpp \
     src/ErrorList.cpp \
     src/FirstTimeDlg.cpp \
-    src/GeneratorVc2015.cpp \
     src/GeneratorVcBase.cpp \
     src/GeneratorXcodeBase.cpp \
     src/GeneratorXcodeIos.cpp \
@@ -55,7 +54,8 @@ SOURCES += \
     src/pugixml/pugixml.cpp \
     src/WizardPageEnvOptions.cpp \
     src/GeneratorVc2015Winrt.cpp \
-    src/GeneratorBase.cpp
+    src/GeneratorBase.cpp \
+    src/GeneratorVc2019.cpp
 
 HEADERS  += \
     src/CinderBlock.h \
@@ -64,7 +64,6 @@ HEADERS  += \
     src/FirstTimeDlg.h \
     src/GeneratorBase.h \
     src/GeneratorVc2015Winrt.h \
-    src/GeneratorVc2015.h \
     src/GeneratorVcBase.h \
     src/GeneratorXcodeBase.h \
     src/GeneratorXcodeIos.h \
@@ -87,7 +86,8 @@ HEADERS  += \
     src/pugixml/pugiconfig.hpp \
     src/pugixml/pugixml.hpp \
     src/WizardPageEnvOptions.h \
-    src/GeneratorVc2015Winrt.h
+    src/GeneratorVc2015Winrt.h \
+    src/GeneratorVc2019.h
 
 RESOURCES += \
     TinderBox.qrc

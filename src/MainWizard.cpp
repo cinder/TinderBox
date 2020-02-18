@@ -33,7 +33,7 @@
 #include "GeneratorXcodeMac.h"
 #include "GeneratorXcodeIos.h"
 #include "GeneratorVc2015Winrt.h"
-#include "GeneratorVc2015.h"
+#include "GeneratorVc2019.h"
 #include "Util.h"
 
 #include <QAbstractButton>
@@ -233,12 +233,12 @@ void MainWizard::generateProject()
 		if( mWizardPageMain->isXcodeIosSelected() )
 			instancer.addGenerator( new GeneratorXcodeIos() );
 		if( mWizardPageMain->isVc2015Selected() ) {
-			GeneratorVc2015::Options options;
-			options.enableWin32( mWizardPageEnvOptions->isVc2015Win32Selected() );
-			options.enableX64( mWizardPageEnvOptions->isVc2015X64Selected() );
+			GeneratorVc2019::Options options;
+			options.enableWin32( false );
+			options.enableX64( true );
 			options.enableDesktopGl( mWizardPageEnvOptions->isVc2015DesktopGlSelected() );
 			options.enableAngle( mWizardPageEnvOptions->isVc2015AngleSelected() );
-			instancer.addGenerator( new GeneratorVc2015( options ) );
+			instancer.addGenerator( new GeneratorVc2019( options ) );
 		}
 		if( mWizardPageMain->isVc2015WinrtSelected() ) {
             GeneratorVc2015WinRt::Options options;

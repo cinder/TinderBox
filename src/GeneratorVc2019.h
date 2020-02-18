@@ -29,11 +29,11 @@
 #include "ProjectTemplate.h"
 #include "GeneratorVcBase.h"
 
-class GeneratorVc2015 : public GeneratorVcBase {
+class GeneratorVc2019 : public GeneratorVcBase {
   public:
 	struct Options;
 
-	GeneratorVc2015( const Options &options )
+	GeneratorVc2019( const Options &options )
 		: GeneratorVcBase( "vc2015" ), mOptions( options )
 	{}
 
