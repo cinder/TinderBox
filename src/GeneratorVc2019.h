@@ -34,7 +34,7 @@ class GeneratorVc2019 : public GeneratorVcBase {
 	struct Options;
 
 	GeneratorVc2019( const Options &options )
-		: GeneratorVcBase( "vc2015" ), mOptions( options )
+        : GeneratorVcBase( "vc2019" ), mOptions( options )
 	{}
 
 	struct Options {

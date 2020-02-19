@@ -48,7 +48,6 @@ WizardPageEnvOptions::WizardPageEnvOptions( MainWizard *parent ) :
 	ui->vc2015HeaderLabel->setFont( font );
 	ui->vc2015WinRtHeaderLabel->setFont( font );
 	font.setPointSize( 9 );
-	ui->vc2015PlatformLabel->setFont( font );
 	ui->vc2015RendererLabel->setFont( font );
 	ui->vc2015WinRtPlatformLabel->setFont( font );
 #endif

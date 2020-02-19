@@ -38,9 +38,8 @@ QString	Vc2015Proj::getSlnHeaderString() const
 {
 	QString result;
 
-	result += "\r\n";
 	result += "Microsoft Visual Studio Solution File, Format Version 12.00\r\n";
-    result += "# Visual Studio 2015\r\n";
+    result += "# Visual Studio Version 16\r\n";
 
 	return result;
 }

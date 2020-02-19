@@ -31,7 +31,7 @@
 GeneratorConditions GeneratorVc2019::getBaseConditions() const
 {
 	QMap<QString,QString> conditions;
-	conditions["compiler"] = "vc2015";
+    conditions["compiler"] = "vc2019";
 	conditions["os"] = "msw";
 	return GeneratorConditions( conditions );
 }
