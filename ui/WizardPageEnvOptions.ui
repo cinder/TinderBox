@@ -154,7 +154,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Visual C++ 2015</string>
+          <string>Visual C++ 2019</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
