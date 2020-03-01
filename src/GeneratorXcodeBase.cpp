@@ -189,7 +189,7 @@ void GeneratorXcodeBase::generate( Instancer *master )
 	vector<GeneratorConditions> conditions = getConditions();
 
 	// setup output paths of the project itself, and create its parent "xcode" directory
-    QString xcodeAbsPath = master->createDirectory( "proj/" + getRootFolderName() );
+	QString xcodeAbsPath = master->createDirectory( getRootFolderName() );
     QString xcodeprojRelPath = xcodeAbsPath + '/' + master->getNamePrefix() + ".xcodeproj";
     QString xcodeprojAbsPath = master->getAbsolutePath( xcodeprojRelPath );
     QString cinderPath = master->getMacRelCinderPath( xcodeAbsPath );
